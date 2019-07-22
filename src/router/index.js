@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HomePage from 'home/HomePage'
-import Login from 'home/basic/Login'
-import Register from 'home/basic/Register'
+import HomePage from '@/components/home/HomePage'
+import Login from 'header/Login'
+import Register from 'header/Register'
+import Article from 'type/ArticleType'
 
 Vue.use(Router)
 
@@ -17,18 +18,21 @@ export default new Router({
       path: '/index',
       name: 'HomePage',
       component: HomePage,
-      children:[
-        {
-          path:'login',
-          name:'loginlink',
-          component: Login
-        },
-        {
-          path:'register',
-          name:'registerlink',
-          component: Register
-        },
-      ]
+    },
+    {
+      path:'/login',
+      name:'loginlink',
+      component: Login
+    },
+    {
+      path:'/register',
+      name:'registerlink',
+      component: Register
+    },
+    {
+      path:'/article/:articletype',
+      name:'typelink',
+      component:Article
     },
   ]
 })

@@ -9,14 +9,14 @@
       <el-col :span="16">
         <div class="grid-content">
           <div class="classifies">
-            <span v-for="(classify,index) in classifies" :key="index" class="curr-classify">{{classify}}</span>
+            <router-link :to="{name:'typelink',params:{articletype:classify}}" v-for="(classify,index) in classifies" :key="index" class="curr-classify" tag="span">{{classify}}</router-link>
           </div>
         </div>
       </el-col>
       <el-col :span="4">
         <div class="grid-content">
-          <span class="login blog-enter">登录</span>
-          <span class="register blog-enter">注册</span>
+          <router-link :to="{name:'loginlink'}" class="login blog-enter" tag="span">登录</router-link>
+          <router-link :to="{name:'registerlink'}" class="register blog-enter" tag="span">注册</router-link>
         </div>
       </el-col>
     </el-row>

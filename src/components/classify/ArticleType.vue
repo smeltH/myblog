@@ -1,13 +1,13 @@
 <template>
-    <div id="homePage" class="homepage">
-      <home-header></home-header>
-    </div>
+  <div class="article-type">
+    <home-header></home-header>
+  </div>
 </template>
 
 <script>
   import HomeHeader from 'header/HomeHeader'
   export default {
-    name: "HomePage",
+    name: "ArticleType",
     data() {
         return {}
     },
@@ -18,5 +18,7 @@
 </script>
 
 <style scoped>
-
+  .article-type >>> .router-link-exact-active{
+    color: #00c1de;
+  }
 </style>
