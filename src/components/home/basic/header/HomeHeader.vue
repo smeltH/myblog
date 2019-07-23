@@ -14,7 +14,7 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <div class="grid-content">
+        <div class="grid-content login-register">
           <router-link :to="{name:'loginlink'}" class="login blog-enter" tag="span">登录</router-link>
           <router-link :to="{name:'registerlink'}" class="register blog-enter" tag="span">注册</router-link>
         </div>
@@ -84,11 +84,9 @@
         }
       }
       .el-col-4{
-        .grid-content{
+        .login-register{
           display: flex;
           justify-content: space-around;
-          .blog-enter{
-          }
         }
       }
     }

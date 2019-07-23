@@ -28,6 +28,7 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'header': resolve('src/components/home/basic/header'),
+      'content': resolve('src/components/home/basic/content'),
       'type': resolve('src/components/classify'),
     }
   },

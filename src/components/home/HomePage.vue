@@ -1,18 +1,21 @@
 <template>
     <div id="homePage" class="homepage">
       <home-header></home-header>
+      <home-content></home-content>
     </div>
 </template>
 
 <script>
   import HomeHeader from 'header/HomeHeader'
+  import HomeContent from 'content/HomeContent'
   export default {
     name: "HomePage",
     data() {
         return {}
     },
     components:{
-      HomeHeader
+      HomeHeader,
+      HomeContent
     }
   }
 </script>
