@@ -27,7 +27,7 @@
   .part-one-content{
     width: 310px;
     height: 100%;
-    padding: 0 10px;
+    padding-left:20px;
     .my-card{
       width: 100%;
       height: 100%;

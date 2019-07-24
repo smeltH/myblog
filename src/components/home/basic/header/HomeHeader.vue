@@ -3,7 +3,7 @@
     <el-row class="header">
       <el-col :span="4">
         <div class="grid-content">
-          <h3 class="blog-name">黄炼的个人博客</h3>
+          <h3 class="blog-name">LoginErr的个人博客</h3>
         </div>
       </el-col>
       <el-col :span="16">

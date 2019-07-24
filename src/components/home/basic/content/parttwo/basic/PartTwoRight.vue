@@ -1,7 +1,7 @@
 <template>
     <div class="part-two-right">
       <div class="title">
-        <h4>最近更新</h4>
+        <h4>博主推荐</h4>
       </div>
       <ul class="new-article-lists">
         <li>【个人博客空间申请】金牛云服，免费领空间啦</li>

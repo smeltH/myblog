@@ -2,12 +2,14 @@
   <div class="home-content">
     <part-one></part-one>
     <part-two></part-two>
+    <other-content></other-content>
   </div>
 </template>
 
 <script>
   import PartOne from 'content/partone/PartOne'
   import PartTwo from 'content/parttwo/PartTwo'
+  import OtherContent from 'content/othercontent/OtherContent'
     export default {
       name: "HomeContent",
       data() {
@@ -15,7 +17,8 @@
       },
       components:{
         PartOne,
-        PartTwo
+        PartTwo,
+        OtherContent
       }
     }
 </script>
