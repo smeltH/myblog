@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HomePage from '@/components/home/HomePage'
+import AdminPage from '@/components/admin/AdminPage'
 import Login from 'header/Login'
 import Register from 'header/Register'
 import Article from 'type/ArticleType'
@@ -33,6 +34,11 @@ export default new Router({
       path:'/article/:articletype',
       name:'typelink',
       component:Article
+    },
+    {
+      path:'/admin',
+      name:'adminlink',
+      component:AdminPage
     },
   ]
 })

@@ -4,11 +4,11 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="userinfo.username"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="userinfo.pass" autocomplete="off"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" v-model="userinfo.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button class="login-btn">登录</el-button>
+          <el-button class="login-btn" @click="login">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -20,20 +20,41 @@
         data() {
             return {
               userinfo:{
-                userinfo:"",
-                pass:""
+                username:"",
+                password:""
               },
               rules: {
                 username: [
                   {required: true, message: '请输入用户名', trigger: 'blur'},
                   {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
                 ],
-                pass: [
+                password: [
                   {required: true, message: '请输入密码', trigger: 'blur'},
                   {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
                 ]
               }
             }
+        },
+        methods:{
+          login(){
+            this.$axios.post('/api/login',this.userinfo).then((res)=>{
+              if(res.data.statements === 0){
+                this.$message({
+                  message: res.data.msg,
+                  type: 'success'
+                })
+                setTimeout(()=>{
+                  this.$router.push('/admin')
+                },200)
+                return
+              }
+              if(res.data.statements === 0){
+                this.$message.error(res.data.msg)
+                return
+              }
+              this.$message.error(res.data.msg)
+            })
+          }
         }
     }
 </script>

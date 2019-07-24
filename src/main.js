@@ -7,9 +7,11 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/font/font-icon/iconfont.css'
 
+import Axios from 'axios'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 
+Vue.prototype.$axios = Axios
 Vue.use(VueAwesomeSwiper)
 
 Vue.config.productionTip = false
