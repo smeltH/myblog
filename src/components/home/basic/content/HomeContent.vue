@@ -21,5 +21,8 @@
 </script>
 
 <style scoped>
-
+  .home-content{
+    background-color: rgb(233,234,237);
+    overflow: hidden;
+  }
 </style>

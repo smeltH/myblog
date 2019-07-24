@@ -32,7 +32,7 @@
       width: 100%;
       height: 100%;
       background-color: rgb(42,42,42);
-      color: #fff;
+      color: #d0d2d4;
       h4{
         padding: 16px 0 20px 20px;
       }

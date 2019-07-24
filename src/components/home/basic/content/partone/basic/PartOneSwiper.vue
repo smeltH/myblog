@@ -11,25 +11,22 @@
         </swiper>
       </div>
       <div class="right-article">
-        <ul class="right">
-          <li class="article article-one">
-            <a href="/notice/27.html" title="为什么说10月24日是程序员的节日？">
-              <img src="http://jxhx2.yangqq.com/skin/jxhx/images/h1.jpg" alt="为什么说10月24日是程序员的节日？">
-              <span>为什么说10月24日是程序员的节日？</span>
-            </a>
-          </li>
-          <li class="article article-one">
-            <a href="/notice/27.html" title="为什么说10月24日是程序员的节日？">
-              <img src="http://jxhx2.yangqq.com/skin/jxhx/images/h1.jpg" alt="为什么说10月24日是程序员的节日？">
-              <span>为什么说10月24日是程序员的节日？</span>
-            </a>
-          </li>
-        </ul>
+        <top-and-buttom>
+          <a href="/notice/27.html" title="为什么说10月24日是程序员的节日？" slot="article-one">
+            <img src="http://jxhx2.yangqq.com/skin/jxhx/images/h1.jpg" alt="为什么说10月24日是程序员的节日？">
+            <span>为什么说10月24日是程序员的节日？</span>
+          </a>
+          <a href="/notice/27.html" title="为什么说10月24日是程序员的节日？" slot="article-two">
+            <img src="http://jxhx2.yangqq.com/skin/jxhx/images/h1.jpg" alt="为什么说10月24日是程序员的节日？">
+            <span>为什么说10月24日是程序员的节日？</span>
+          </a>
+        </top-and-buttom>
       </div>
     </div>
 </template>
 
 <script>
+  import TopAndButtom from 'public/TopAndButtom'
     export default {
       name: "PartOneSwiper",
       data() {
@@ -60,6 +57,9 @@
             },
           }
         }
+      },
+      components:{
+        TopAndButtom
       }
     }
 </script>
@@ -82,47 +82,6 @@
     }
     .right-article{
       width: 300px;
-      .right{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-        .article{
-          width: 100%;
-          position: relative;
-          height: 47%;
-          overflow: hidden;
-          a{
-            width: 100%;
-            height: 100%;
-            img{
-              width: 100%;
-              height: 100%;
-              opacity: .9;
-              transition: all 0.5s;
-            }
-            span{
-              position: absolute;
-              top: 25%;
-              left: 0;
-              right: 0;
-              color: #fff;
-              font-size: 15px;
-              text-align: center;
-              margin-top: 5px;
-              padding: 0 40px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              line-height: 24px;
-              height: 48px;
-            }
-          }
-          a:hover img{
-            transform: scale(1.1);
-            transition: all 0.5s;
-          }
-        }
-      }
     }
   }
 </style>

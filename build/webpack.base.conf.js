@@ -29,6 +29,7 @@ module.exports = {
       '@': resolve('src'),
       'header': resolve('src/components/home/basic/header'),
       'content': resolve('src/components/home/basic/content'),
+      'public': resolve('src/components/public'),
       'type': resolve('src/components/classify'),
     }
   },
