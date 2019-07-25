@@ -31,6 +31,7 @@ module.exports = {
       'content': resolve('src/components/home/basic/content'),
       'public': resolve('src/components/public'),
       'type': resolve('src/components/classify'),
+      'admin': resolve('src/components/admin'),
     }
   },
   module: {

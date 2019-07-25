@@ -5,6 +5,11 @@ import AdminPage from '@/components/admin/AdminPage'
 import Login from 'header/Login'
 import Register from 'header/Register'
 import Article from 'type/ArticleType'
+import UserLists from 'admin/basic/UserLists'
+import ArticleLists from 'admin/basic/ArticleLists'
+import CategoryAdd from 'admin/basic/CategoryAdd'
+import CategoryLists from 'admin/basic/CategoryLists'
+import CreateArticle from 'admin/basic/CreateArticle'
 
 Vue.use(Router)
 
@@ -38,7 +43,15 @@ export default new Router({
     {
       path:'/admin',
       name:'adminlink',
-      component:AdminPage
+      component:AdminPage,
+      redirect:'/admin/userLists',
+      children:[
+        {path:'userLists',name:'userlink',component:UserLists},
+        {path:'articleLists',name:'articlelink',component:ArticleLists},
+        {path:'categoryAdd',name:'categoryAddlink',component:CategoryAdd},
+        {path:'categoryLists',name:'categorylink',component:CategoryLists},
+        {path:'createArticle',name:'createArticlelink',component:CreateArticle},
+      ]
     },
   ]
 })

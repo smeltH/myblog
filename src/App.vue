@@ -16,4 +16,9 @@ export default {
   ol,ul,li{margin:0;padding:0;list-style:none;}
   img{border:none;display:block;}
   a{text-decoration:none;color:#000;}
+  .line{
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+  }
 </style>

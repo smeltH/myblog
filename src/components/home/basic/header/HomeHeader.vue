@@ -14,9 +14,13 @@
         </div>
       </el-col>
       <el-col :span="4">
-        <div class="grid-content login-register">
+        <div v-show="!isLogin" class="grid-content login-register">
           <router-link :to="{name:'loginlink'}" class="login blog-enter" tag="span">登录</router-link>
           <router-link :to="{name:'registerlink'}" class="register blog-enter" tag="span">注册</router-link>
+        </div>
+        <div v-show="isLogin" class="logined">
+          <span class="user-name">{{username}}</span>
+          <router-link :to="{name:'adminlink'}" tag="span" class="admin" v-if="isAdmin">进入后台管理</router-link>
         </div>
       </el-col>
     </el-row>
@@ -28,8 +32,20 @@
       name: "HomeHeader",
       data() {
           return {
-            classifies:["css","html","vue","javascript","h5"]
+            classifies:["css","html","vue","javascript","h5"],
+            isAdmin:false,
+            isLogin:false,
+            username:'无名氏'
           }
+      },
+      created(){
+        const userinfo = JSON.parse(localStorage.getItem('userinfo'));
+        if(userinfo){
+          this.isLogin = true;
+          this.username = userinfo.username;
+          this.isAdmin = userinfo.isAdmin;
+          return;
+        }
       },
       methods: {
       }
@@ -87,6 +103,19 @@
         .login-register{
           display: flex;
           justify-content: space-around;
+        }
+        .logined{
+          .user-name{
+            font-size: 18px;
+          }
+          .admin{
+            display: inline-block;
+            margin-left:10px;
+            font-size: 12px;
+            font-weight: 300;
+            border-bottom: 1px solid #fff;
+            cursor: pointer;
+          }
         }
       }
     }

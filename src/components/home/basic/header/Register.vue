@@ -45,7 +45,7 @@
       },
       methods:{
         register(){
-          this.$axios.post('/api/register',this.userinfo).then((res)=>{
+          this.$axios.post('/api/admin/register',this.userinfo).then((res)=>{
             console.log(res);
           })
         }

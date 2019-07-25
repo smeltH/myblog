@@ -16,52 +16,53 @@
 
 <script>
     export default {
-        name: "Login",
-        data() {
-            return {
-              userinfo:{
-                username:"",
-                password:""
-              },
-              rules: {
-                username: [
-                  {required: true, message: '请输入用户名', trigger: 'blur'},
-                  {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
-                ],
-                password: [
-                  {required: true, message: '请输入密码', trigger: 'blur'},
-                  {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
-                ]
-              }
+      name: "Login",
+      data() {
+          return {
+            userinfo:{
+              username:"",
+              password:""
+            },
+            rules: {
+              username: [
+                {required: true, message: '请输入用户名', trigger: 'blur'},
+                {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
+              ],
+              password: [
+                {required: true, message: '请输入密码', trigger: 'blur'},
+                {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur'}
+              ]
             }
-        },
-        methods:{
-          login(){
-            this.$axios.post('/api/login',this.userinfo).then((res)=>{
-              if(res.data.statements === 0){
-                this.$message({
-                  message: res.data.msg,
-                  type: 'success'
-                })
-                setTimeout(()=>{
-                  this.$router.push('/admin')
-                },200)
-                return
-              }
-              if(res.data.statements === 0){
-                this.$message.error(res.data.msg)
-                return
-              }
-              this.$message.error(res.data.msg)
-            })
           }
+      },
+      methods:{
+        login(){
+          this.$axios.post('/api/admin/login',this.userinfo).then((res)=>{
+            //登录成功
+            if(res.data.statements === 0){
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              })
+              setTimeout(()=>{
+                this.$router.push('/admin')
+              },200)
+              return
+            }
+            if(res.data.statements === 1){
+              this.$message.error(res.data.msg)
+              return
+            }
+            this.$message.error(res.data.msg)
+          })
         }
+      }
     }
 </script>
 
 <style scoped lang="less">
-
   .login{
+    opacity: 1;
     position: absolute;
     top: 0;
     bottom: 0;

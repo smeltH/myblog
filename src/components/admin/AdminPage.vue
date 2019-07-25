@@ -1,48 +1,148 @@
 <template>
     <div class="admin-manage">
-      <el-menu
-        :default-active="activeIndex2"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1">用户管理</el-menu-item>
-        <el-submenu index="2">
-          <template slot="title">我的工作台</template>
-          <el-menu-item index="2-1">选项1</el-menu-item>
-          <el-menu-item index="2-2">选项2</el-menu-item>
-          <el-menu-item index="2-3">选项3</el-menu-item>
-          <el-submenu index="2-4">
-            <template slot="title">选项4</template>
-            <el-menu-item index="2-4-1">选项1</el-menu-item>
-            <el-menu-item index="2-4-2">选项2</el-menu-item>
-            <el-menu-item index="2-4-3">选项3</el-menu-item>
-          </el-submenu>
-        </el-submenu>
-        <el-menu-item index="3">文章管理</el-menu-item>
-        <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">文章管理</a></el-menu-item>
-      </el-menu>
+      <div class="control-panel">
+        <el-col :span="12">
+          <h2>后台管理</h2>
+          <el-menu
+            router
+            default-active="2"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b">
+            <el-submenu index="1">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span>用户管理</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="userLists">用户列表</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="2">
+              <template slot="title">
+                <i class="el-icon-menu"></i>
+                <span>内容管理</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="articleLists">文章列表</el-menu-item>
+                <el-menu-item index="createArticle">写文章</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title">
+                <i class="el-icon-document"></i>
+                <span>分类管理</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="categoryLists">分类列表</el-menu-item>
+                <el-menu-item index="categoryAdd">分类添加</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+          </el-menu>
+        </el-col>
+      </div>
+      <div class="admin-info">
+        <div class="isOut">
+          <el-button class="user" @click="isOut">{{username}}<i class="el-icon-arrow-down"></i>
+            <el-button type="primary" class="sign-out" @click="signOut" v-show="isShow">退出登录</el-button>
+          </el-button>
+        </div>
+        <router-view></router-view>
+      </div>
     </div>
 </template>
 
 <script>
+  import {getCookie} from '../../static/js/getCookie'
   export default {
     name: "AdminPage",
     data() {
       return {
-        activeIndex2: '1'
+        activeName: 'first',
+        username:'',
+        visible: false,
+        isShow:false
+      }
+    },
+    created(){
+      const userInfo = getCookie('userinfo')
+      if(userInfo){
+        console.log(JSON.parse(userInfo));
+        this.username = JSON.parse(userInfo).username
       }
     },
     methods: {
-      handleSelect(key, keyPath) {
+      handleOpen(key, keyPath) {
         console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      signOut(){
+        this.$router.push('/');
+      },
+      isOut(){
+        console.log(1);
+        this.isShow = !this.isShow;
       }
     }
   }
 </script>
 
 <style scoped lang="less">
-
+  .admin-manage{
+    display: flex;
+    .admin-info{
+      flex: 1;
+      padding: 20px 0 0 30px;
+      .isOut{
+        box-sizing: border-box;
+        padding-top: 20px;
+        padding-right: 100px;
+        text-align: right;
+        .user{
+          position: relative;
+          .sign-out{
+            width: 100%;
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ecf5ff;
+            color: #409EFF;
+          }
+          .el-icon-arrow-down{
+            padding-left: 4px;
+          }
+        }
+      }
+    }
+    .control-panel{
+      width: 300px;
+      height: 100vh;
+      background-color: rgb(84,92,100);
+      box-sizing: border-box;
+      h2{
+        padding: 20px 0 20px 30px;
+        color: #fff;
+        font-size: 24px;
+      }
+      .el-submenu{
+        width: 300px;
+      }
+    }
+    .control-panel::after{
+      display:block;
+      height:0;
+      content: '';
+      clear:both;
+      visibility:hidden;
+    }
+  }
+  .control-panel /deep/ .el-col-12{
+    width: 100%;
+  }
 </style>
