@@ -46,7 +46,7 @@
       </div>
       <div class="admin-info">
         <div class="isOut">
-          <user-info><span slot="users">{{username}}</span></user-info>
+          <user-info></user-info>
         </div>
         <router-view></router-view>
       </div>
@@ -71,7 +71,6 @@
     created(){
       const userInfo = getCookie('userinfo')
       if(userInfo){
-        console.log(JSON.parse(userInfo));
         this.username = JSON.parse(userInfo).username
       }
     },

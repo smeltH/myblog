@@ -5,8 +5,17 @@
 </template>
 
 <script>
-export default {
-  name: 'App'
+  import {getCookie} from "./static/js/getCookie";
+
+  export default {
+  name: 'App',
+  created(){
+    let userInfo = getCookie('userinfo')
+    if(userInfo){
+      userInfo = JSON.parse(userInfo)
+      this.$store.commit('saveUserName',userInfo.username)
+    }
+  }
 }
 </script>
 

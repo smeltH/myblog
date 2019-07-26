@@ -19,7 +19,7 @@
           <router-link :to="{name:'registerlink'}" class="register blog-enter" tag="span">注册</router-link>
         </div>
         <div v-show="isLogin" class="logined">
-          <user-info><span slot="users">{{username}}</span></user-info>
+          <user-info></user-info>
           <router-link :to="{name:'adminlink'}" tag="span" class="admin" v-if="isAdmin">进入后台管理</router-link>
         </div>
       </el-col>

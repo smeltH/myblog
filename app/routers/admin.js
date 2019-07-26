@@ -75,6 +75,32 @@ router.post('/userlists',(req,res)=>{
     })
   })
 })
+
+router.post('/updataAdmin',(req,res)=>{
+  console.log(req.body);
+  const {isAdmin:admin,_id} = req.body;
+  console.log(admin);
+  const resultContent = {}
+  UserInfo.updateOne({_id},{$set:{isAdmin:!admin}},(err,result)=>{
+    if(err){
+      if(admin){
+        resultContent.msg = "取消管理员失败"
+      }else{
+        resultContent.msg = "设置管理员失败"
+      }
+      resultContent.statements = 1
+      res.send(resultContent)
+      return
+    }
+    if(admin){
+      resultContent.msg = "取消管理员成功"
+    }else{
+      resultContent.msg = "设置管理员成功"
+    }
+    resultContent.statements = 0
+    res.send(resultContent)
+  })
+})
 module.exports = router
 
 

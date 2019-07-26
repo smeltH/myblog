@@ -45,6 +45,7 @@
                 type: 'success'
               })
               setTimeout(()=>{
+                this.$store.commit('saveUserName',this.userinfo.username)
                 this.$router.push('/')
               },200)
               return

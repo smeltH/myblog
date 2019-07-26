@@ -30,15 +30,11 @@
           prop="isAdmin"
           label="是否为管理员">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" v-if="host">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">添加为管理员</el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              @click="handleEdit(scope.$index, scope.row)">{{tableData[scope.$index].addAdmin}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -63,16 +59,22 @@
         maxPages:0,
         totalCounts:0,
         currentPage:0,
-        count:5
+        count:5,
+        host:false
       }
     },
     async created(){
+      if(this.$store.state.username === 'admin12'){
+        this.host = true
+      }
       const {data:{data,maxPages,totalCounts}} = await this.$axios.post('/api/admin/userlists',{page:0,count:this.count})
       this.tableData = data.map((item) => {
         if (item.isAdmin) {
           item.isAdmin = "是";
+          item.addAdmin = "取消管理员"
         } else {
           item.isAdmin = "否";
+          item.addAdmin = "设为管理员"
         }
         return item;
       });
@@ -80,19 +82,41 @@
       this.totalCounts = totalCounts;
     },
     methods: {
-      handleEdit(index, row) {
-        console.log(index, row);
-      },
-      handleDelete(index, row) {
-        console.log(index, row);
+      // 管理员操作按钮
+      async handleEdit(index, row) {
+        if(this.tableData[index].username === 'admin12'){
+          this.$message.error('不允许操作')
+          return
+        }
+        let result = {};
+        if(row.isAdmin==='是'){
+          const {data} = await this.$axios.post('/api/admin/updataAdmin',{isAdmin:true,_id:this.tableData[index]._id})
+          result = data;
+        }else{
+          const {data} = await this.$axios.post('/api/admin/updataAdmin',{isAdmin:false,_id:this.tableData[index]._id})
+          result = data;
+        }
+        if(result.statements === 0){
+          this.$message({
+            message:result.msg,
+            type:'success'
+          })
+          setTimeout(()=>{
+            this.$router.go(0)
+          },200)
+        }else{
+          this.$message.error(result.msg)
+        }
       },
       async handleCurrentChange(val) {
         const {data:{data,maxPages,totalCounts}} = await this.$axios.post('/api/admin/userlists',{page:val-1,count:this.count})
         this.tableData = data.map((item) => {
           if (item.isAdmin) {
             item.isAdmin = "是";
+            item.addAdmin = "取消管理员"
           } else {
             item.isAdmin = "否";
+            item.addAdmin = "设为管理员"
           }
           return item;
         });

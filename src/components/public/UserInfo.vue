@@ -1,6 +1,6 @@
 <template>
     <span class="isOut">
-      <el-button class="user" @click="isOut"><slot name="users"></slot><i class="el-icon-arrow-down"></i>
+      <el-button class="user" @click="isOut">{{username}}<i class="el-icon-arrow-down"></i>
         <el-button type="primary" class="sign-out" @click="signOut" v-show="isShow">退出登录</el-button>
       </el-button>
     </span>
@@ -11,13 +11,18 @@
     name: "UserInfo",
     data() {
       return {
-        isShow:false
+        isShow:false,
+        username:''
       }
+    },
+    created(){
+      this.username = this.$store.state.username;
     },
     methods:{
       signOut(){
-        this.$router.push('/');
+        this.$store.commit('saveUserName','')
         document.cookie = 'userinfo=' + '';
+        this.$router.push('/');
         this.$router.go(0)
       },
       isOut(){
