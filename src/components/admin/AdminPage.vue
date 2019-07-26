@@ -46,9 +46,7 @@
       </div>
       <div class="admin-info">
         <div class="isOut">
-          <el-button class="user" @click="isOut">{{username}}<i class="el-icon-arrow-down"></i>
-            <el-button type="primary" class="sign-out" @click="signOut" v-show="isShow">退出登录</el-button>
-          </el-button>
+          <user-info><span slot="users">{{username}}</span></user-info>
         </div>
         <router-view></router-view>
       </div>
@@ -56,6 +54,7 @@
 </template>
 
 <script>
+  import UserInfo from 'public/UserInfo'
   import {getCookie} from '../../static/js/getCookie'
   export default {
     name: "AdminPage",
@@ -63,9 +62,11 @@
       return {
         activeName: 'first',
         username:'',
-        visible: false,
         isShow:false
       }
+    },
+    components:{
+      UserInfo
     },
     created(){
       const userInfo = getCookie('userinfo')
@@ -98,6 +99,7 @@
     .admin-info{
       flex: 1;
       padding: 20px 0 0 30px;
+      overflow: hidden;
       .isOut{
         box-sizing: border-box;
         padding-top: 20px;

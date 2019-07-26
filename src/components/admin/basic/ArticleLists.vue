@@ -2,7 +2,7 @@
   <div class="article-lists">
     <div class="crumbs-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/admin' }">后台管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>内容管理</el-breadcrumb-item>
         <el-breadcrumb-item>文章列表</el-breadcrumb-item>
       </el-breadcrumb>

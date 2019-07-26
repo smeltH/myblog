@@ -45,7 +45,7 @@
                 type: 'success'
               })
               setTimeout(()=>{
-                this.$router.push('/admin')
+                this.$router.push('/')
               },200)
               return
             }

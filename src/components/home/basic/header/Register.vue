@@ -46,7 +46,17 @@
       methods:{
         register(){
           this.$axios.post('/api/admin/register',this.userinfo).then((res)=>{
-            console.log(res);
+            if(res.data.statements === 0){
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              });
+              setTimeout(()=>{
+                this.$router.push('/index')
+              },500)
+            }else{
+              this.$message.error(res.data.msg)
+            }
           })
         }
       }

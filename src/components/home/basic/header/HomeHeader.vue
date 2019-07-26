@@ -19,7 +19,7 @@
           <router-link :to="{name:'registerlink'}" class="register blog-enter" tag="span">注册</router-link>
         </div>
         <div v-show="isLogin" class="logined">
-          <span class="user-name">{{username}}</span>
+          <user-info><span slot="users">{{username}}</span></user-info>
           <router-link :to="{name:'adminlink'}" tag="span" class="admin" v-if="isAdmin">进入后台管理</router-link>
         </div>
       </el-col>
@@ -28,28 +28,34 @@
 </template>
 
 <script>
-    export default {
-      name: "HomeHeader",
-      data() {
-          return {
-            classifies:["css","html","vue","javascript","h5"],
-            isAdmin:false,
-            isLogin:false,
-            username:'无名氏'
-          }
-      },
-      created(){
-        const userinfo = JSON.parse(localStorage.getItem('userinfo'));
-        if(userinfo){
-          this.isLogin = true;
-          this.username = userinfo.username;
-          this.isAdmin = userinfo.isAdmin;
-          return;
+  import UserInfo from 'public/UserInfo'
+  import {getCookie} from '../../../../static/js/getCookie'
+  export default {
+    name: "HomeHeader",
+    data() {
+        return {
+          classifies:["css","html","vue","javascript","h5"],
+          isAdmin:false,
+          isLogin:false,
+          username:'无名氏'
         }
-      },
-      methods: {
+    },
+    components:{
+      UserInfo
+    },
+    created(){
+      let userInfo = getCookie('userinfo')
+      if(userInfo){
+        userInfo = JSON.parse(userInfo)
+        this.isLogin = true;
+        this.username = userInfo.username;
+        if(userInfo.isAdmin){
+          this.isAdmin = userInfo.isAdmin;
+        }
+        return;
       }
     }
+  }
 </script>
 
 <style lang="less" scoped>

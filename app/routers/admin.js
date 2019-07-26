@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router();
 const UserInfo = require('../schema/userinfo');
 const app = express();
+
+//用户注册路由
 router.post('/register',(req,res,next)=>{
   returnResult = {}
   const {username,password} = req.body;
@@ -21,6 +23,7 @@ router.post('/register',(req,res,next)=>{
     return;
   })
 })
+//用户登录路由
 router.post('/login',(req,res,next)=>{
   returnResult = {}
   const {username,password} = req.body;
@@ -54,12 +57,23 @@ router.post('/login',(req,res,next)=>{
           username,
           _id:result2._id,
           isAdmin:!!returnResult.isAdmin
-        }))
+        }),{maxAge:2592000000})
       }).then(()=>{
         res.send(returnResult)
         return
       })
     })
+})
+
+//用户列表路由
+router.post('/userlists',(req,res)=>{
+  const {page,count} = req.body;
+  UserInfo.countDocuments().then((totalCounts)=>{
+    let maxPages = Math.ceil(totalCounts/count);
+    UserInfo.find().limit(count).skip(page*count).sort({'_id':-1}).then((result)=>{
+      res.send({data:result,totalCounts,maxPages})
+    })
+  })
 })
 module.exports = router
 
