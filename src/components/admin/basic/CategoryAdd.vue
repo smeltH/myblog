@@ -2,42 +2,20 @@
   <div class="category-add">
     <div class="crumbs-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/admin' }">后台管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>分类列表</el-breadcrumb-item>
         <el-breadcrumb-item>分类添加</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="line"></div>
-    <el-table
-      :data="tableData"
-      stripe
-      style="width: 100%">
-      <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="地址">
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-form label-width="80px" class="form-add">
+      <el-form-item label="名称" class="category">
+        <el-input v-model="category"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">立即添加</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -46,31 +24,26 @@
     name: "CategoryAdd",
     data() {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        category:''
       }
     },
     methods: {
-      handleEdit(index, row) {
-        console.log(index, row);
-      },
-      handleDelete(index, row) {
-        console.log(index, row);
+      //分类数据提交
+      async onSubmit() {
+        if(!this.category){
+          this.$message.error('内容不能为空')
+          return
+        }
+        const {data} = await this.$axios.post('/api/admin/categoryAdd',{category:this.category})
+        if(data.statements === 1){
+          this.$message.error(data.msg)
+          return
+        }
+        this.$message({
+          message:data.msg,
+          type:'success'
+        })
+        this.$router.go(0)
       }
     }
   }
@@ -82,6 +55,12 @@
     .el-breadcrumb__item{
       font-size: 16px;
     }
+  }
+  .form-add{
+    padding-top: 50px;
+  }
+  .form-add /deep/ .category{
+    width: 300px;
   }
 </style>
 

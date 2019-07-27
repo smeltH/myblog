@@ -3,8 +3,9 @@
     <div class="crumbs-nav">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>内容管理</el-breadcrumb-item>
-        <el-breadcrumb-item>写文章</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/admin/articleLists' }">内容管理</el-breadcrumb-item>
+        <el-breadcrumb-item>文章列表</el-breadcrumb-item>
+        <el-breadcrumb-item>修改文章</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="line"></div>
@@ -13,7 +14,7 @@
         <el-input v-model="form.title"></el-input>
       </el-form-item>
       <el-form-item label="文章分类">
-        <el-select v-model="form.categorys" placeholder="请选择文章分类">
+        <el-select v-model="form.tag.categoryName" placeholder="请选择文章分类">
           <el-option v-for="(category,index) in categoryArr" :label="category.categoryName" :value="category._id" :key="index"></el-option>
         </el-select>
       </el-form-item>
@@ -33,7 +34,7 @@
         <el-input type="textarea" v-model="form.content"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">发布文章</el-button>
+        <el-button type="primary" @click="onSubmit">更新文章</el-button>
         <el-button>取消</el-button>
       </el-form-item>
     </el-form>
@@ -42,18 +43,29 @@
 
 <script>
   export default {
-    name: "CreateArticle",
+    name: "EditArticle",
     data() {
       return {
+        oldform:{},
         form: {
           title: '',
           author: '',
           categorys:[],
           description: '',
           content: '',
-          isTop:false
+          isTop:false,
+          tag:''
         }
       }
+    },
+    async created(){
+      const {data} = await this.$axios.post('/api/admin/findArticle',{_id:this.$route.query.id})
+      if(data.statements){
+        this.$message.error(data.msg)
+        return
+      }
+      this.form = data;
+      this.oldform = JSON.stringify(data)
     },
     computed:{
       categoryArr(){
@@ -62,7 +74,18 @@
     },
     methods: {
       async onSubmit() {
-        const {data} = await this.$axios.post('/api/admin/createArticle',this.form)
+        let newForm = JSON.stringify(this.form)
+        if(newForm === this.oldform){
+          this.$message({
+            message:'文章信息没有改变',
+            type:'info'
+          });
+          this.$router.go(-1);
+          return
+        }
+        newForm = JSON.parse(newForm)
+        newForm.tag = newForm.tag._id
+        const {data} = await this.$axios.post('/api/admin/editArticle',newForm)
         if(data.statements === 1){
           this.$message.error(data.msg)
           return
@@ -71,7 +94,7 @@
           message:data.msg,
           type:'success'
         })
-        this.$router.go(0)
+        this.$router.push('/admin/articleLists')
       }
     }
   }

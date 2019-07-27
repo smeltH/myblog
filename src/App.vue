@@ -15,6 +15,7 @@
       userInfo = JSON.parse(userInfo)
       this.$store.commit('saveUserName',userInfo.username)
     }
+    this.$store.dispatch('getCategorys');
   }
 }
 </script>

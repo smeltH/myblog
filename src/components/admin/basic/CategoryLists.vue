@@ -9,28 +9,25 @@
     </div>
     <div class="line"></div>
     <el-table
-      :data="tableData"
+      :data="getCategoryList"
       stripe
       style="width: 100%">
       <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
+        prop="_id"
+        label="分类id"
+        width="600">
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="地址">
+        prop="categoryName"
+        label="分类名"
+        width="500">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            type="primary"
+            @click="open(scope.$index, scope.row)">重命名</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -46,31 +43,69 @@
     name: "CategoryLists",
     data() {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: []
       }
     },
-    methods: {
-      handleEdit(index, row) {
-        console.log(index, row);
+    methods:{
+      // 重命名按钮点击事件
+      open(index,row){
+        this.$prompt('请输入新的分类', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(({ value }) => {
+          this.$axios.post('/api/admin/editCategory',{_id:row._id,value})
+            .then((result)=>{
+              if(result.data.statements === 1){
+                this.$message({
+                  type: 'info',
+                  message: result.data.msg
+                });
+                return
+              }
+              this.$message({
+                type: 'success',
+                message: result.data.msg
+              });
+              setTimeout(()=>{
+                this.$router.go(0)
+              },300)
+            })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });
+        });
       },
-      handleDelete(index, row) {
-        console.log(index, row);
+      // 删除按钮点击事件
+      async handleDelete(index,row){
+        const {data} = await this.$axios.post('/api/admin/delete',{_id:row._id,categoryName:row.categoryName})
+        if(data.statements === 1){
+          this.$message({
+            type: 'info',
+            message: data.msg
+          });
+          return
+        }
+        if(data.statements === 2){
+          this.$message({
+            type: 'info',
+            message: data.msg
+          });
+          return
+        }
+        this.$message({
+          type: 'success',
+          message: data.msg
+        });
+        setTimeout(()=>{
+          this.$router.go(0)
+        },300)
+      },
+    },
+    computed:{
+      getCategoryList(){
+        return this.$store.state.category
       }
     }
   }

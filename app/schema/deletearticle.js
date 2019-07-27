@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema
-const articleSchemea = mongoose.Schema({
+const deletearticleSchemea = mongoose.Schema({
   tag:{
     type:Schema.Types.ObjectId,
     ref:'categorys'
@@ -17,12 +17,9 @@ const articleSchemea = mongoose.Schema({
   commentNumber:Number,//评论数
   supportNumber:Number,//点赞数
   hotNumber:Number,//热度即阅读数
-  isTop:{
-    type:Boolean,
-    default: false
-  },//是否置顶
+  isTop:Boolean,//是否置顶
 })
-module.exports = mongoose.model('articlelists',articleSchemea)
+module.exports = mongoose.model('deletearticlelists',deletearticleSchemea)
 
 
 

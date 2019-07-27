@@ -10,6 +10,7 @@ import ArticleLists from 'admin/basic/ArticleLists'
 import CategoryAdd from 'admin/basic/CategoryAdd'
 import CategoryLists from 'admin/basic/CategoryLists'
 import CreateArticle from 'admin/basic/CreateArticle'
+import EditArticle from 'admin/basic/EditArticle'
 
 Vue.use(Router)
 
@@ -47,6 +48,7 @@ export default new Router({
       redirect:'/admin/userLists',
       children:[
         {path:'userLists',name:'userlink',component:UserLists},
+        {path:'articleLists/editArticle',name:'editlink',component:EditArticle},
         {path:'articleLists',name:'articlelink',component:ArticleLists},
         {path:'categoryAdd',name:'categoryAddlink',component:CategoryAdd},
         {path:'categoryLists',name:'categorylink',component:CategoryLists},

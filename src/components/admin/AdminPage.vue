@@ -7,8 +7,6 @@
             router
             default-active="2"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b">
@@ -18,7 +16,7 @@
                 <span>用户管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="userLists">用户列表</el-menu-item>
+                <el-menu-item index="/admin/userLists">用户列表</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="2">
@@ -27,8 +25,8 @@
                 <span>内容管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="articleLists">文章列表</el-menu-item>
-                <el-menu-item index="createArticle">写文章</el-menu-item>
+                <el-menu-item index="/admin/articleLists">文章列表</el-menu-item>
+                <el-menu-item index="/admin/createArticle">写文章</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="3">
@@ -37,8 +35,8 @@
                 <span>分类管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="categoryLists">分类列表</el-menu-item>
-                <el-menu-item index="categoryAdd">分类添加</el-menu-item>
+                <el-menu-item index="/admin/categoryLists">分类列表</el-menu-item>
+                <el-menu-item index="/admin/categoryAdd">分类添加</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
@@ -75,17 +73,10 @@
       }
     },
     methods: {
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      },
       signOut(){
         this.$router.push('/');
       },
       isOut(){
-        console.log(1);
         this.isShow = !this.isShow;
       }
     }
@@ -93,11 +84,14 @@
 </script>
 
 <style scoped lang="less">
+  .control-panel{
+    padding-top: 50px;
+  }
   .admin-manage{
     display: flex;
     .admin-info{
       flex: 1;
-      padding: 20px 0 0 30px;
+      padding: 10px 0 0 30px;
       overflow: hidden;
       .isOut{
         box-sizing: border-box;

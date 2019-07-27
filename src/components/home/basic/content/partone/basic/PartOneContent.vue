@@ -1,12 +1,12 @@
 <template>
     <div class="part-one-content">
       <div class="my-card">
-        <h4>我的名片</h4>
+        <h4>LoginErr的个人名片</h4>
         <div class="my-info">
-          <p>网名：DanceSmile | 即步非烟</p>
-          <p>职业：Web前端设计师、网页设计</p>
-          <p>现居：四川省-成都市</p>
-          <p>Email：dancesmiling@qq.com</p>
+          <p>就读于：中南民族大学</p>
+          <p>理想职业：全栈工程师</p>
+          <p>兴趣爱好：唱、跳、rap、篮球</p>
+          <p>Email：846261654@qq.com</p>
         </div>
       </div>
     </div>
