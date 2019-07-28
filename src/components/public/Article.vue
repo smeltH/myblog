@@ -1,8 +1,5 @@
 <template>
     <div class="article">
-      <div class="article-left">
-        <img src="https://www.xuanmo.xin/wp-content/uploads/2019/07/QQ20190704-201427@2x.png" alt="">
-      </div>
       <div class="article-right">
         <div class="right-title">
           <h2>使用ES2018正则Unicode属性类过滤Emoji表情</h2>
@@ -59,7 +56,6 @@
       }
     }
     .article-right{
-      width: 600px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -67,16 +63,20 @@
         font-size: 16px;
         padding: 8px 0;
       }
-      p{
-        font-size: 14px;
-        line-height: 26px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
+      .right-content{
+        padding-top: 10px;
+        p{
+          font-size: 14px;
+          line-height: 26px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+        }
       }
       .operate-info{
+        margin-top: 10px;
         position: relative;
         .iconlists{
           font-size: 12px;

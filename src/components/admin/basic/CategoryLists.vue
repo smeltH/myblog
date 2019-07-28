@@ -9,7 +9,7 @@
     </div>
     <div class="line"></div>
     <el-table
-      :data="getCategoryList"
+      :data="getCategoryList[currentPage]"
       stripe
       style="width: 100%">
       <el-table-column
@@ -35,6 +35,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="count"
+        layout="total, prev, pager, next, jumper"
+        :total="totalCounts">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -43,7 +52,10 @@
     name: "CategoryLists",
     data() {
       return {
-        tableData: []
+        count:6,
+        currentPage:0,
+        totalCounts:0,
+        maxPages:0,
       }
     },
     methods:{
@@ -102,10 +114,23 @@
           this.$router.go(0)
         },300)
       },
+
+      //切换页面按钮
+      handleCurrentChange(val) {
+        this.currentPage = val-1
+      }
     },
     computed:{
       getCategoryList(){
-        return this.$store.state.category
+        const categories = this.$store.state.category
+        this.totalCounts = categories.length
+        this.maxPages = Math.ceil(categories.length/this.count)
+        const arr = [];
+        for(let i=0,len=this.maxPages;i<len;i++){
+          let item = categories.slice(i*this.count,(i+1)*this.count)
+          arr.push(item)
+        }
+        return arr
       }
     }
   }
@@ -117,5 +142,14 @@
     .el-breadcrumb__item{
       font-size: 16px;
     }
+  }
+  .block{
+    width: auto;
+    margin: 50px 150px 10px 10px;
+    text-align: center;
+  }
+  .block /deep/ .el-pagination{
+    display: inline-block;
+    margin: 0 auto;
   }
 </style>

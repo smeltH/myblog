@@ -94,9 +94,9 @@
       padding: 10px 0 0 30px;
       overflow: hidden;
       .isOut{
-        box-sizing: border-box;
-        padding-top: 20px;
-        padding-right: 100px;
+        position: absolute;
+        top: 12px;
+        right: 100px;
         text-align: right;
         .user{
           position: relative;

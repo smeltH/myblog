@@ -1,6 +1,9 @@
 <template>
     <span class="isOut">
-      <el-button class="user" @click="isOut">{{username}}<i class="el-icon-arrow-down"></i>
+      <el-button class="user" @click="isOut">
+        <i class="el-icon-arrow-right" v-show="isShow"></i>
+        <i class="el-icon-arrow-left" v-show="!isShow"></i>
+        {{username}}
         <el-button type="primary" class="sign-out" @click="signOut" v-show="isShow">退出登录</el-button>
       </el-button>
     </span>
@@ -43,8 +46,8 @@
       .sign-out{
         width: 100%;
         position: absolute;
-        bottom: -40px;
-        left: 50%;
+        left: -50%;
+        top: -1px;
         transform: translateX(-50%);
       }
       .el-icon-arrow-down{

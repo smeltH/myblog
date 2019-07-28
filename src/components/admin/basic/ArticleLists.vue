@@ -50,6 +50,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="count"
+        layout="total, prev, pager, next, jumper"
+        :total="totalCounts">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -69,13 +78,18 @@
             releaseTime:''
           }
         ],
-        count:5
+        count:8,
+        currentPage:0,
+        totalCounts:0,
+        maxPages:0,
       }
     },
     methods: {
+      //重命名事件处理
       handleEdit(index, row) {
         this.$router.push(`/admin/articleLists/editArticle?id=${row._id}`)
       },
+      //删除事件处理
       async handleDelete(index, row) {
         const {data} = await this.$axios.post('/api/admin/deleteArticle',{_id:row._id});
         if(data.statements === 1){
@@ -87,10 +101,23 @@
           type:'success'
         })
         this.$router.go(0)
+      },
+      //切换页面按钮
+      async handleCurrentChange(val) {
+        const {data:{data,maxPages,totalCounts}} = await this.$axios.post('/api/admin/articlelists',{page:val-1,count:this.count})
+        this.tableData = data.map((item)=>{
+          item.releaseTime = getTime(item.releaseTime)
+          if(item.isTop){
+            item.isTop = '是'
+          }else{
+            item.isTop = '否'
+          }
+          return item
+        })
       }
     },
     async created(){
-      const {data:{data}} = await this.$axios.get('/api/admin/articlelists',{page:0,count:5})
+      const {data:{data,maxPages,totalCounts}} = await this.$axios.post('/api/admin/articlelists',{page:0,count:this.count})
       data.map((item)=>{
         item.releaseTime = getTime(item.releaseTime)
         if(item.isTop){
@@ -99,6 +126,8 @@
           item.isTop = '否'
         }
       })
+      this.maxPages = maxPages;
+      this.totalCounts = totalCounts;
       this.tableData = data;
     }
   }
@@ -110,6 +139,15 @@
     .el-breadcrumb__item{
       font-size: 16px;
     }
+  }
+  .block{
+    width: auto;
+    margin: 50px 150px 10px 10px;
+    text-align: center;
+  }
+  .block /deep/ .el-pagination{
+    display: inline-block;
+    margin: 0 auto;
   }
 </style>
 

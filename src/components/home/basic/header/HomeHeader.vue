@@ -3,13 +3,13 @@
     <el-row class="header">
       <el-col :span="4">
         <div class="grid-content">
-          <h3 class="blog-name">LoginErr的个人博客</h3>
+          <router-link :to="{path:'/'}" class="blog-name" tag="h3" title="点击返回首页">LoginErr的个人博客</router-link>
         </div>
       </el-col>
       <el-col :span="16">
         <div class="grid-content">
           <div class="classifies">
-            <router-link :to="{name:'typelink',params:{articletype:classify}}" v-for="(classify,index) in classifies" :key="index" class="curr-classify" tag="span">{{classify}}</router-link>
+            <router-link :to="{name:'typelink',params:{articletype:classify.categoryName}}" v-for="(classify,index) in getCategory" :key="index" class="curr-classify" tag="span">{{classify.categoryName}}</router-link>
           </div>
         </div>
       </el-col>
@@ -34,7 +34,6 @@
     name: "HomeHeader",
     data() {
         return {
-          classifies:["css","html","vue","javascript","h5"],
           isAdmin:false,
           isLogin:false,
           username:'无名氏'
@@ -42,6 +41,11 @@
     },
     components:{
       UserInfo
+    },
+    computed:{
+      getCategory(){
+        return this.$store.state.category
+      }
     },
     created(){
       let userInfo = getCookie('userinfo')
@@ -60,6 +64,9 @@
 
 <style lang="less" scoped>
   .home-header{
+    position: fixed;
+    z-index: 99;
+    width: 100%;
     height: 60px;
     background-color: rgb(28,35,39);
     color: #fff;

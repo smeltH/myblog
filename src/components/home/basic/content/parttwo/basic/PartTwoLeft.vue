@@ -1,92 +1,8 @@
 <template>
     <div class="part-two-left">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="用户管理" name="first">
+      <el-tab-pane :label="category.categoryName" :name="(index1).toString()" v-for="(category,index1) in getCategory" :key="index1">
         <div class="content">
-          <div class="left-content">
-            <top-and-buttom>
-              <a href="/notice/27.html" title="" slot="article-one">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/4.jpg" alt="">
-                <span>个人网站做好了，百度不收录怎么办？来，看看他们怎么做的</span>
-              </a>
-              <a href="/notice/27.html" title="" slot="article-two">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/2.jpg" alt="">
-                <span>个人博客，属于我的小世界！</span>
-              </a>
-            </top-and-buttom>
-          </div>
-          <five-articles>
-            <el-collapse-item :name="(index*1+1).toString()" v-for="(article,index) in articleData" slot="article" :key="index">
-              <template slot="title">
-                <h5>{{article.title}}</h5>
-              </template>
-              <p>{{article.content}}</p>
-            </el-collapse-item>
-          </five-articles>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="配置管理" name="second">
-        <div class="content">
-          <div class="left-content">
-            <top-and-buttom>
-              <a href="/notice/27.html" title="" slot="article-one">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/4.jpg" alt="">
-                <span>个人网站做好了，百度不收录怎么办？来，看看他们怎么做的</span>
-              </a>
-              <a href="/notice/27.html" title="" slot="article-two">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/2.jpg" alt="">
-                <span>个人博客，属于我的小世界！</span>
-              </a>
-            </top-and-buttom>
-          </div>
-          <five-articles>
-            <el-collapse-item :name="(index*1+1).toString()" v-for="(article,index) in articleData" slot="article" :key="index">
-              <template slot="title">
-                <h5>{{article.title}}</h5>
-              </template>
-              <p>{{article.content}}</p>
-            </el-collapse-item>
-          </five-articles>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="角色管理" name="third">
-        <div class="content">
-          <div class="left-content">
-            <top-and-buttom>
-              <a href="/notice/27.html" title="" slot="article-one">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/4.jpg" alt="">
-                <span>个人网站做好了，百度不收录怎么办？来，看看他们怎么做的</span>
-              </a>
-              <a href="/notice/27.html" title="" slot="article-two">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/2.jpg" alt="">
-                <span>个人博客，属于我的小世界！</span>
-              </a>
-            </top-and-buttom>
-          </div>
-          <five-articles>
-            <el-collapse-item :name="(index*1+1).toString()" v-for="(article,index) in articleData" slot="article" :key="index">
-              <template slot="title">
-                <h5>{{article.title}}</h5>
-              </template>
-              <p>{{article.content}}</p>
-            </el-collapse-item>
-          </five-articles>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="定时任务补偿" name="fourth">
-        <div class="content">
-          <div class="left-content">
-            <top-and-buttom>
-              <a href="/notice/27.html" title="" slot="article-one">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/4.jpg" alt="">
-                <span>个人网站做好了，百度不收录怎么办？来，看看他们怎么做的</span>
-              </a>
-              <a href="/notice/27.html" title="" slot="article-two">
-                <img src="http://jxhx2.yangqq.com/skin/jxhx/images/2.jpg" alt="">
-                <span>个人博客，属于我的小世界！</span>
-              </a>
-            </top-and-buttom>
-          </div>
           <five-articles>
             <el-collapse-item :name="(index*1+1).toString()" v-for="(article,index) in articleData" slot="article" :key="index">
               <template slot="title">
@@ -108,7 +24,7 @@
       name: "PartTwoLeft",
       data() {
           return {
-            activeName: 'first',
+            activeName: 0,
             articleData:[
               {
                 title:'安静地做一个爱设计的女子',
@@ -128,6 +44,11 @@
               },
             ]
           }
+      },
+      computed:{
+        getCategory(){
+          return this.$store.state.category;
+        }
       },
       methods: {
         handleClick(tab, event) {
@@ -152,7 +73,7 @@
       display: flex;
       justify-content: space-between;
       .left-content{
-        width: 300px;
+        /*width: 300px;*/
         height: 260px;
       }
     }

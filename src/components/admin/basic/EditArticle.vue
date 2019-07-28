@@ -21,17 +21,19 @@
       <el-form-item label="文章作者" class="author">
         <el-input v-model="form.author"></el-input>
       </el-form-item>
-
       <el-form-item label="是否置顶" prop="isTop">
         <el-switch v-model="form.isTop"></el-switch>
         <span class="tip" v-if="form.isTop">开启置顶</span>
         <span class="tip" v-if="!form.isTop">取消置顶</span>
+        <el-switch v-model="form.isRecommend" class="isRecommend"></el-switch>
+        <span class="tip" v-if="form.isRecommend">推荐</span>
+        <span class="tip" v-if="!form.isRecommend">不推荐</span>
       </el-form-item>
       <el-form-item label="文章简介" class="description">
         <el-input type="textarea" v-model="form.description"></el-input>
       </el-form-item>
       <el-form-item label="文章内容" class="content">
-        <el-input type="textarea" v-model="form.content"></el-input>
+        <editor ref="froalaEditor" @on-change="changeContent" v-model="form.content"></editor>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">更新文章</el-button>
@@ -42,6 +44,7 @@
 </template>
 
 <script>
+  import Editor from 'public/Editor'
   export default {
     name: "EditArticle",
     data() {
@@ -54,9 +57,17 @@
           description: '',
           content: '',
           isTop:false,
+          isRecommend:false,
           tag:''
         }
       }
+    },
+    components:{
+      Editor
+    },
+    updated(){
+      this.$refs.froalaEditor.$el.children[1].children[1].innerHTML = "";
+      this.$refs.froalaEditor.$el.children[1].children[0].innerHTML = `<p>${this.form.content}</p>`
     },
     async created(){
       const {data} = await this.$axios.post('/api/admin/findArticle',{_id:this.$route.query.id})
@@ -73,6 +84,14 @@
       }
     },
     methods: {
+      init(){
+        this.$nextTick(()=>{
+          this.$refs.froalaEditor.setHtml(this.form.content)
+        })
+      },
+      changeContent(html){
+        this.form.content = html
+      },
       async onSubmit() {
         let newForm = JSON.stringify(this.form)
         if(newForm === this.oldform){
@@ -108,17 +127,22 @@
     }
   }
   .el-form{
-    padding-top: 50px;
+    padding-top: 30px;
+    .isRecommend{
+      color: #606266;
+      font-size: 14px;
+      margin: 0 8px 0 200px;
+    }
   }
   .el-form /deep/ .el-form-item__content{
     width: 1200px;
 
   }
   .description /deep/ .el-textarea__inner{
-    height: 80px;
+    height: 70px;
   }
   .content /deep/ .el-textarea__inner{
-  height: 270px;
+    height: 270px;
   }
   .title /deep/ .el-input{
     width: 600px;

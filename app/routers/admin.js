@@ -225,7 +225,7 @@ router.post('/delete',(req,res)=>{
 
 
 // 查询文章列表路由
-router.get('/articlelists',(req,res)=>{
+router.post('/articlelists',(req,res)=>{
   const {page,count} = req.body;
   Article.countDocuments().then((totalCounts)=>{
     let maxPages = Math.ceil(totalCounts/count);
@@ -255,10 +255,12 @@ router.post('/editArticle',(req,res)=>{
     title
   }).then((result)=>{
     if(result){
-      returnData.msg = "该标题已存在"
-      returnData.statements = 1
-      res.send(returnData)
-      return
+      if(result.length > 1){
+        returnData.msg = "该标题已存在"
+        returnData.statements = 1
+        res.send(returnData)
+        return
+      }
     }
     Article.updateOne(
       {_id},

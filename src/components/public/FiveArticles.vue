@@ -27,8 +27,10 @@
 </script>
 
 <style scoped lang="less">
+  .five-articles{
+    width: 100%;
+  }
   .el-collapse{
-    width: 560px;
      /deep/ .el-collapse-item__content{
        height: 46px;
        p{

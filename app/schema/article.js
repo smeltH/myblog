@@ -21,6 +21,10 @@ const articleSchemea = mongoose.Schema({
     type:Boolean,
     default: false
   },//是否置顶
+  isRecommend:{
+    type:Boolean,
+    default: false
+  },//是否推荐
 })
 module.exports = mongoose.model('articlelists',articleSchemea)
 

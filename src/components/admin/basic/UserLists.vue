@@ -108,6 +108,7 @@
           this.$message.error(result.msg)
         }
       },
+      //切换页面按钮
       async handleCurrentChange(val) {
         const {data:{data,maxPages,totalCounts}} = await this.$axios.post('/api/admin/userlists',{page:val-1,count:this.count})
         this.tableData = data.map((item) => {
