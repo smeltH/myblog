@@ -13,10 +13,15 @@ const articleSchemea = mongoose.Schema({
   releaseTime:{
     type: Date,
     default: Date.now
-  },//发布时间
-  commentNumber:Number,//评论数
-  supportNumber:Number,//点赞数
-  hotNumber:Number,//热度即阅读数
+  }, //发布时间
+  supportNumber:{
+    type:Number,
+    default:0
+  },//点赞数
+  hotNumber:{
+    type:Number,
+    default:0
+  },//热度即阅读数
   isTop:{
     type:Boolean,
     default: false

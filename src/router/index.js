@@ -11,6 +11,7 @@ import CategoryAdd from 'admin/basic/CategoryAdd'
 import CategoryLists from 'admin/basic/CategoryLists'
 import CreateArticle from 'admin/basic/CreateArticle'
 import EditArticle from 'admin/basic/EditArticle'
+import ArticleDetail from 'public/ArticleDetail'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
       path:'/article/:articletype',
       name:'typelink',
       component:Article
+    },
+    {
+      path:'/deatil/:id',
+      name:'detaillink',
+      component:ArticleDetail
     },
     {
       path:'/admin',

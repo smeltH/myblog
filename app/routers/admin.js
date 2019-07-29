@@ -4,7 +4,6 @@ const UserInfo = require('../schema/userinfo');
 const Category = require('../schema/category');
 const Article = require('../schema/article');
 const DeleteArticle = require('../schema/deletearticle');
-const app = express();
 
 const returnData = {}
 
@@ -28,7 +27,7 @@ router.post('/register',(req,res)=>{
   })
 })
 //用户登录路由
-router.post('/login',(req,res,next)=>{
+router.post('/login',(req,res)=>{
   const {username,password} = req.body;
   UserInfo.findOne({
     username
@@ -135,7 +134,7 @@ router.post('/category',(req,res)=>{
 
 //写文章路由
 router.post('/createArticle',(req,res)=>{
-  const {title,author,categorys,description,content,isTop} = req.body;
+  const {title,author,categorys,description,content,isTop,isRecommend} = req.body;
   Article.findOne({
     title
   }).then((result)=>{
@@ -151,11 +150,57 @@ router.post('/createArticle',(req,res)=>{
       description,
       content,
       isTop,
+      isRecommend,
       tag:categorys
     }).save()
     returnData.msg = "文章添加成功"
     returnData.statements = 0
     res.send(returnData)
+  })
+})
+
+//查找准备要修改文章的相关信息
+router.post('/findArticle',(req,res)=>{
+  const {_id} = req.body;
+  Article.findOne({_id}).populate('tag').then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    if(err){
+      returnData.msg = "该文章已不存在"
+      returnData.statements = 1
+      res.send(returnData)
+      return
+    }
+  })
+})
+//修改文章
+router.post('/editArticle',(req,res)=>{
+  const {title,author,categorys,description,content,isRecommend,isTop,_id} = req.body;
+  Article.findOne({
+    title
+  }).then((result)=>{
+    if(result){
+      if(result.length > 1){
+        returnData.msg = "该标题已存在"
+        returnData.statements = 1
+        res.send(returnData)
+        return
+      }
+    }
+    Article.updateOne(
+      {_id},
+      {$set:{title,author,categorys,description,content,isTop,isRecommend}},
+      (err)=>{
+        if(err){
+          returnData.msg = "文章更新失败"
+          returnData.statements = 1
+          res.send(returnData)
+          return
+        }
+        returnData.msg = "文章更新成功"
+        returnData.statements = 0
+        res.send(returnData)
+      })
   })
 })
 
@@ -231,50 +276,6 @@ router.post('/articlelists',(req,res)=>{
     let maxPages = Math.ceil(totalCounts/count);
     Article.find().populate('tag').limit(count).skip(page*count).sort({'_id':-1}).then((result)=>{
       res.send({data:result,totalCounts,maxPages})
-    })
-  })
-})
-//查找准备要修改文章的相关信息
-router.post('/findArticle',(req,res)=>{
-  const {_id} = req.body;
-  Article.findOne({_id}).populate('tag').then((result)=>{
-    res.send(result)
-  }).catch((err)=>{
-    if(err){
-      returnData.msg = "该文章已不存在"
-      returnData.statements = 1
-      res.send(returnData)
-      return
-    }
-  })
-})
-//修改文章
-router.post('/editArticle',(req,res)=>{
-  const {title,author,categorys,description,content,isTop,_id} = req.body;
-  Article.findOne({
-    title
-  }).then((result)=>{
-    if(result){
-      if(result.length > 1){
-        returnData.msg = "该标题已存在"
-        returnData.statements = 1
-        res.send(returnData)
-        return
-      }
-    }
-    Article.updateOne(
-      {_id},
-      {$set:{title,author,categorys,description,content,isTop}},
-      (err)=>{
-      if(err){
-        returnData.msg = "文章更新失败"
-        returnData.statements = 1
-        res.send(returnData)
-        return
-      }
-      returnData.msg = "文章更新成功"
-      returnData.statements = 0
-      res.send(returnData)
     })
   })
 })

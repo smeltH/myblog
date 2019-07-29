@@ -71,7 +71,6 @@
     methods: {
       init(){
         this.$nextTick(()=>{
-          console.log(this.form.content);
           this.$refs.froalaEditor.setHtml(this.form.content)
         })
       },

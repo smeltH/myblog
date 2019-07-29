@@ -89,7 +89,7 @@
       handleEdit(index, row) {
         this.$router.push(`/admin/articleLists/editArticle?id=${row._id}`)
       },
-      //删除事件处理
+      //删除按钮
       async handleDelete(index, row) {
         const {data} = await this.$axios.post('/api/admin/deleteArticle',{_id:row._id});
         if(data.statements === 1){

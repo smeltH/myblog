@@ -25,7 +25,8 @@
         <el-switch v-model="form.isTop"></el-switch>
         <span class="tip" v-if="form.isTop">开启置顶</span>
         <span class="tip" v-if="!form.isTop">取消置顶</span>
-        <el-switch v-model="form.isRecommend" class="isRecommend"></el-switch>
+        <span class="isRecommend">是否推荐</span>
+        <el-switch v-model="form.isRecommend"></el-switch>
         <span class="tip" v-if="form.isRecommend">推荐</span>
         <span class="tip" v-if="!form.isRecommend">不推荐</span>
       </el-form-item>

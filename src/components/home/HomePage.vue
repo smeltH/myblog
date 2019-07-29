@@ -16,10 +16,15 @@
     components:{
       HomeHeader,
       HomeContent
+    },
+    created(){
+      this.$store.dispatch('getArticles')
     }
   }
 </script>
 
 <style scoped>
-
+  .homepage{
+    background-color: rgb(233,234,237);
+  }
 </style>
