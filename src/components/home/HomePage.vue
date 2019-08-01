@@ -16,9 +16,6 @@
     components:{
       HomeHeader,
       HomeContent
-    },
-    created(){
-      this.$store.dispatch('getArticles')
     }
   }
 </script>

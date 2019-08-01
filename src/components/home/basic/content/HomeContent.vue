@@ -1,18 +1,14 @@
 <template>
   <div class="home-content">
-    <!--<part-two></part-two>-->
-    <!--<other-content></other-content>-->
     <content-left></content-left>
     <content-right></content-right>
   </div>
 </template>
 
 <script>
-  // import PartTwo from 'content/parttwo/PartTwo'
-  // import OtherContent from 'content/othercontent/OtherContent'
   import ContentLeft from 'content/basic/ContentLeft'
   import ContentRight from 'content/basic/ContentRight'
-    export default {
+  export default {
       name: "HomeContent",
       data() {
           return {}

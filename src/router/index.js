@@ -4,14 +4,15 @@ import HomePage from '@/components/home/HomePage'
 import AdminPage from '@/components/admin/AdminPage'
 import Login from 'header/Login'
 import Register from 'header/Register'
-import Article from 'type/ArticleType'
 import UserLists from 'admin/basic/UserLists'
 import ArticleLists from 'admin/basic/ArticleLists'
 import CategoryAdd from 'admin/basic/CategoryAdd'
 import CategoryLists from 'admin/basic/CategoryLists'
 import CreateArticle from 'admin/basic/CreateArticle'
 import EditArticle from 'admin/basic/EditArticle'
-import ArticleDetail from 'public/ArticleDetail'
+import ArticleDetail from 'article/detail/ArticleDetail'
+import Article from 'article/ArticleType'
+import NotFound from 'public/NotFound'
 
 Vue.use(Router)
 
@@ -61,5 +62,14 @@ export default new Router({
         {path:'createArticle',name:'createArticlelink',component:CreateArticle},
       ]
     },
+    {
+      path:'/404',
+      name:'notfoundlink',
+      component:NotFound
+    },
+    {
+      path: "*",
+      redirect: "/404"
+    }
   ]
 })

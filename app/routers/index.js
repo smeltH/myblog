@@ -15,20 +15,43 @@ router.post('/getArticleLists',(req,res)=>{
     })
   })
 })
-//获取分好类文章列表
+//获取文章列表 通过query判断是否要分类
 router.post('/getCategoryArticles',(req,res)=>{
-  let {page,count,index} = req.body;
-  if(!index){index=0}
+  let msg = {};
+  let {page,count} = req.body;
+  let  {articletype} = req.query
+  console.log(articletype);
+  articletype = articletype+'';
   Category.find().then((result1)=>{
-    Article.countDocuments({tag:result1[index]}).then((totalCounts)=>{
+    let index = 0;
+    result1.map((item,idx)=>{
+      if(item.categoryName === articletype){
+        index = idx
+      }
+    })
+    if(articletype === 'undefined'){
+      msg = {};
+    }else{
+      msg.tag = result1[index]
+    }
+    Article.countDocuments(msg).then((totalCounts)=>{
       let maxPages = Math.ceil(totalCounts/count);
-      Article.find({tag:result1[index]}).populate('tag').sort({'_id':-1}).limit(count).skip(page*count).then((result)=>{
+      Article.find(msg).populate('tag').sort({'_id':-1}).limit(count).skip(page*count).then((result)=>{
+        console.log(result);
         res.send({data:result,totalCounts,maxPages})
       })
     })
     const totalCounts = result1.length;
     let maxPages = Math.ceil(totalCounts/count);
 
+  })
+})
+
+//获取文章详情文章
+router.post('/articleDetail',(req,res)=>{
+  const {_id} = req.body;
+  Article.findOne({_id}).populate('tag').then((result)=>{
+    res.send(result)
   })
 })
 

@@ -70,6 +70,8 @@
       const userInfo = getCookie('userinfo')
       if(userInfo){
         this.username = JSON.parse(userInfo).username
+      }else {
+        this.$router.push('/404')
       }
     },
     methods: {

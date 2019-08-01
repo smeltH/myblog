@@ -9,7 +9,7 @@
       <el-col :span="16">
         <div class="grid-content">
           <div class="classifies">
-            <router-link :to="{name:'typelink',params:{articletype:classify.categoryName}}" v-for="(classify,index) in getCategory" :key="index" class="curr-classify" tag="span">{{classify.categoryName}}</router-link>
+            <router-link :to="{path:'/',query:{articletype:classify.categoryName}}" v-for="(classify,index) in getCategory" :key="index" class="curr-classify" tag="span">{{classify.categoryName}}</router-link>
           </div>
         </div>
       </el-col>
@@ -58,6 +58,8 @@
         }
         return;
       }
+    },
+    methods:{
     }
   }
 </script>

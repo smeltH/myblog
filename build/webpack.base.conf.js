@@ -30,7 +30,7 @@ module.exports = {
       'header': resolve('src/components/home/basic/header'),
       'content': resolve('src/components/home/basic/content'),
       'public': resolve('src/components/public'),
-      'type': resolve('src/components/classify'),
+      'article': resolve('src/components/article'),
       'admin': resolve('src/components/admin'),
     }
   },

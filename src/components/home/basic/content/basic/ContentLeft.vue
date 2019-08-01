@@ -21,7 +21,7 @@
         <div class="other-title">
           <h2>最新文章</h2>
         </div>
-        <div class="article-lists" v-for="(article,index) in getArticlelist.data">
+        <div class="article-lists" v-for="(article,index) in getArticlelist">
           <articles>
             <h2 slot="title">{{article.title}}</h2>
             <p slot="description">{{article.description}}</p>
@@ -50,7 +50,9 @@
   import Articles from 'public/Article'
   import TopAndButtom from 'public/TopAndButtom'
   import FiveArticles from 'public/FiveArticles'
-    export default {
+  import {getTime} from "../../../../../static/js/getTime";
+
+  export default {
       name: "ContentLeft",
       data() {
           return {
@@ -60,36 +62,50 @@
             articles:[
               {}
             ],
-            count2:8,
+            count2:1,
             currentPage:0,
             totalCounts:0,
             maxPages:0,
+            getArticlelist:[]
           }
       },
       async created(){
-        const {data:{data,maxPages,totalCounts}} = await this.$axios.post(`/api/index/getCategoryArticles`,{count:this.count1})
-        console.log(data);
+        const articletype = this.$route.query.articletype
+        const {data:{data,maxPages,totalCounts}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count2})
+        const {} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1})
+        // 上面的分类面板赋值
         this.articleData = data
+        const arr1 = [],
+              arr2 = [];
+        data.map((item)=>{
+          item.releaseTime = getTime(item.releaseTime)
+          if(item.isTop){
+            arr1.push(item)
+          }else {
+            arr2.push(item)
+          }
+        })
+        const results = arr1.concat(arr2)
+        this.getArticlelist = results;
+        this.maxPages = maxPages;
+        this.totalCounts = totalCounts;
       },
       computed:{
-        getArticlelist(){
-          const {data,maxPages,totalCounts} = this.$store.getters.getArticle
-          this.maxPages = maxPages
-          this.totalCounts = totalCounts
-          return this.$store.getters.getArticle
-        },
+        // 获取文章分类
         getCategory(){
           return this.$store.state.category;
         }
       },
       methods: {
         //切换页面按钮
-        handleCurrentChange(val) {
-          const {data,maxPages,totalCounts} = this.$store.getters.getArticle
-          this.tableData.data = data
+        async handleCurrentChange(val) {
+          const query = this.$route.query.articletype
+          const {data:{data,maxPages,totalCounts}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${query}`,{count:this.count2,page:val-1})
+          this.getArticlelist = data
         },
-        async handleClick(tab, event) {
-          const {data:{data}} = await this.$axios.post(`/api/index/getCategoryArticles`,{count:this.count1,index:tab.index})
+        // 上面的分类栏里面的点击事件
+        async handleClick(tab) {
+          const {data:{data}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${tab.label}`,{count:this.count1})
           this.articleData = data
         }
       },
@@ -97,6 +113,28 @@
         TopAndButtom,
         FiveArticles,
         Articles
+      },
+      watch:{
+        '$route.query'(){
+          const articletype = this.$route.query.articletype
+          this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1}).then((result)=>{
+            console.log(result.data);
+            const arr1 = [],
+              arr2 = [];
+            result.data.data.map((item)=>{
+              item.releaseTime = getTime(item.releaseTime)
+              if(item.isTop){
+                arr1.push(item)
+              }else {
+                arr2.push(item)
+              }
+            })
+            const results = arr1.concat(arr2)
+            this.getArticlelist = results;
+            this.maxPages = result.data.maxPages;
+            this.totalCounts = result.data.totalCounts;
+          })
+        }
       }
     }
 </script>
@@ -128,7 +166,6 @@
       background-color: rgb(233,234,237);
     }
     .bottom-content{
-      background-color: #fff;
       margin-top: 20px;
       border-bottom: 2px solid #e9eaed;
       background-color: rgb(255,255,255);

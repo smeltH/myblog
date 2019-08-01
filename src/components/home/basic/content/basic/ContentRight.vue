@@ -5,10 +5,7 @@
           <h4>博主推荐</h4>
         </div>
         <ul class="new-article-lists">
-          <li>【个人博客空间申请】金牛云服，免费领空间啦</li>
-          <li>双十一，阿里云特惠活动，快来领券啦</li>
-          <li>第二届 优秀个人博客模板比赛参选活动</li>
-          <li>为什么说10月24日是程序员的节日？</li>
+          <router-link :to="{name:'detaillink',params:{id:article._id}}" tag="li" v-for="(article,index) in articles" :key="index">{{article.title}}</router-link>
         </ul>
       </div>
       <div class="bottom-recommand"></div>
@@ -16,12 +13,19 @@
 </template>
 
 <script>
-    export default {
-        name: "ContentRight",
-        data() {
-            return {}
+  export default {
+    name: "ContentRight",
+    data() {
+        return {
+          count:4,
+          articles:[]
         }
-    }
+    },
+    async created(){
+      const {data:{data}} = await this.$axios.post('/api/index/getCategoryArticles',{count:this.count})
+      this.articles = data
+    },
+  }
 </script>
 
 <style scoped lang="less">
