@@ -9,7 +9,6 @@ const articleSchemea = mongoose.Schema({
   content:String,//文章内容
   description:String,//文章简介
   author:String,//文章作者
-  comments:Array,//评论内容
   releaseTime:{
     type: Date,
     default: Date.now

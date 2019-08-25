@@ -119,7 +119,7 @@ router.post('/categoryAdd',(req,res)=>{
     }).save()
     returnData.msg = "分类添加成功"
     returnData.statements = 0
-    res.send(returnData)
+    res.send(returnData.data)
   })
 })
 

@@ -12,6 +12,16 @@
           点赞数：<span class="support">{{detail.supportNumber}}</span>
         </div>
         <div v-html="detail.content" class="content"></div>
+        <div class="article-comments">
+          <div class="comment-box">
+            <div class="publishing">
+              <comment-box :articleId="detail._id"></comment-box>
+            </div>
+            <div class="published">
+              <user-comment></user-comment>
+            </div>
+          </div>
+        </div>
       </div>
       <content-right></content-right>
     </div>
@@ -22,23 +32,32 @@
   import {getTime} from "../../../static/js/getTime";
   import HomeHeader from 'header/HomeHeader'
   import ContentRight from 'content/basic/ContentRight'
+  import UserComment from 'article/detail/base/UserComment'
+  import CommentBox from 'article/detail/base/CommentBox'
+  import {getCookie} from "../../../static/js/getCookie";
   export default {
     name: "ArticleDetail",
     data() {
       return {
-        detail:{}
+        detail:{
+          isLogin:false,
+        },
       }
     },
     components:{
       HomeHeader,
-      ContentRight
+      ContentRight,
+      UserComment,
+      CommentBox
+    },
+    methods:{
     },
     async created(){
       const _id = this.$route.params.id
       const {data} = await this.$axios.post('/api/index/articleDetail',{_id})
-      console.log(data);
       data.releaseTime = getTime(data.releaseTime)
       data.commentNumber = data.comments.length
+      console.log(data);
       this.detail = data
     }
   }
@@ -93,5 +112,34 @@
   .content /deep/ p{
     line-height: 240%;
     letter-spacing: 2px;
+  }
+  .article-comments{
+    padding: 20px;
+    min-height: 400px;
+    /*background-color: #e6e6e6;*/
+    margin-top: 20px;
+    border: 1px solid #efefef;
+    .no-login{
+      background-color: #ddd;
+      user-select: none;
+    }
+    .comment-box{
+      .publishing{
+        background-color: #F7F7F7;
+        overflow: hidden;
+      }
+      .published{
+        width: 90%;
+        margin: 0 auto;
+      }
+    }
+  }
+  h2{
+    font-size: 20px;
+    line-height: 50px;
+  }
+  h3{
+    font-size: 20px;
+    line-height: 40px;
   }
 </style>

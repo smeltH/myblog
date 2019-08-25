@@ -28,7 +28,7 @@ import 'swiper/dist/css/swiper.css'
 
 Vue.prototype.$axios = Axios
 Vue.use(VueAwesomeSwiper)
-
+Vue.use(router);
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
