@@ -71,34 +71,18 @@ const commentSchemea = mongoose.Schema({
             type:Boolean,
             default:false
           },
+          //回复框是否展开
+          isShowReply:{
+            type:Boolean,
+            default:false
+          },
+          replyUsered:{
+            type:String,
+            default:''
+          }
         }
       ]
     },//评论内容
-  userReply:[
-    //评论
-    {
-      //评论用户名
-      replyUser:{
-        type:String,
-        default: ''
-      },
-      //评论内容
-      replyContent:{
-        type:String,
-        default: ''
-      },
-      //回复时间
-      replyTime:{
-        type: Date,
-        default: Date.now
-      },
-      //点赞数
-      replySupport:{
-        type:Number,
-        default:0
-      }
-    }
-    ]
 })
 module.exports = mongoose.model('commentlists',commentSchemea)
 

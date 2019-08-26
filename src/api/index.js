@@ -12,14 +12,11 @@ const getComment = ()=>{
 }
 
 //用户点赞
-const support = (value,id)=>{
-  return Axios.get(`/api/index/support?newState=${value}&id=${id}`)
+const support = (value,id,level,id2)=>{
+  console.log(value, id, level, id2);
+  return Axios.get(`/api/index/support?newState=${value}&id=${id}&who=${level}&secondId=${id2}`)
 }
 
-//用户回复框
-const replyBox = (value,id)=>{
-  return Axios.get(`/api/index/replyBox?isShow=${value}&id=${id}`)
-}
 
 //提交用户回复内容
 const reply = (value,id,user,time) =>{
@@ -36,4 +33,8 @@ const replyContent = (id) => {
     id
   })
 }
-export {getComment,commitComment,support,replyBox,reply,replyContent}
+//回复框初始化
+const initBox = () => {
+  return Axios.get('/api/index/initBox');
+}
+export {getComment,commitComment,support,reply,replyContent,initBox}

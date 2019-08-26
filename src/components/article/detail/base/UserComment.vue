@@ -8,7 +8,7 @@
           </div>
           <div class="right-comment-content">
             <span class="user-name">
-              {{comment.userComments.commentUser}}
+                {{comment.userComments.commentUser}}
             </span>
             <p class="per-comment-content">
               {{comment.userComments.commentContent}}
@@ -16,8 +16,8 @@
             <div class="per-comment-info">
               <span class="per-time">{{comment.userComments.commentTime}}</span>
               <div>
-                <span class="support" @click="support(comment.userComments.isSupport,idx)"><i :class="comment.userComments.isSupport"></i>{{comment.userComments.commentSupport}}</span>
-                <span class="reply" @click="reply(!comment.userComments.isShow,comment._id)">回复<i class="el-icon-chat-round"></i></span>
+                <span class="support" @click="support(comment.userComments.isSupport,idx,'first')"><i :class="comment.userComments.isSupport"></i>{{comment.userComments.commentSupport}}</span>
+                <span class="reply" @click="reply(!comment.userComments.isShow,comment._id,'first')">回复<i class="el-icon-chat-round"></i></span>
               </div>
             </div>
             <div class="reply-box" v-if="comment.userComments.isShow">
@@ -31,7 +31,7 @@
       </div>
       <div class="line" v-if="!comment.userComments.isReply"></div>
       <div class="other-comments" v-if="comment.userComments.isReply">
-        <div class="per-comment" v-for="(replyCurr,index) in comment.userComments.reply">
+        <div class="per-comment" v-for="(replyCurr,index) in comment.userComments.reply" :key="index">
           <div class="left-img">
             <img src="" alt="">
           </div>
@@ -44,14 +44,14 @@
             <div class="per-comment-info">
               <span class="per-time">{{replyCurr.replyTime}}</span>
               <div>
-                <span class="support"><i :class="replyCurr.replyIsSupport"></i>{{replyCurr.replySupport}}</span>
-                <span class="reply" @click="currReply">回复<i class="el-icon-chat-round"></i></span>
+                <span class="support" @click="support(replyCurr.replyIsSupport,idx,'second',replyCurr._id)"><i :class="replyCurr.replyIsSupport"></i>{{replyCurr.replySupport}}</span>
+                <span class="reply" @click="reply(!replyCurr.isShowReply,comment._id,'second',replyCurr._id)">回复<i class="el-icon-chat-round"></i></span>
               </div>
             </div>
-            <div class="reply-box" v-if="isReply">
+            <div class="reply-box" v-if="replyCurr.isShowReply">
               <textarea class="reply-content" :placeholder="bgText"></textarea>
               <div class="btn">
-                <button class="commit-reply">添加回复</button>
+                <button class="commit-reply" @click="commitCurrReply(replyCurr._id)">添加回复</button>
               </div>
             </div>
           </div>
@@ -64,7 +64,7 @@
 
 <script>
     import {getCookie} from "../../../../static/js/getCookie";
-    import {getComment,replyBox,support,reply,replyContent} from "../../../../api";
+    import {getComment,support,reply,replyContent,initBox} from "../../../../api";
     import {getTime} from "../../../../static/js/getTime";
 
     export default {
@@ -81,38 +81,58 @@
       },
       methods:{
         //点击回复按钮
-        async reply(value,id){
+        async reply(value,id,level,id2){
           let time = new Date();
-          if(getCookie('userinfo')){
-            await replyBox(value,id)
-            const data = await getComment()
-            this.time = time
-            this.commentList = data.data
-            this.commentList = this.commentList.map((item)=>{
-              item.userComments.commentTime = getTime(item.userComments.commentTime)
-              if(!item.userComments.isSupport){
-                item.userComments.isSupport = 'el-icon-star-off'
-              }else{
-                item.userComments.isSupport = 'el-icon-star-on'
+          if(getCookie('userinfo')) {
+            this.commentList.map((item1) => {
+              if (level === 'first') {
+                if (item1._id == id) {
+                  item1.userComments.isShow = !item1.userComments.isShow;
+                }
+              } else {
+                item1.userComments.reply.map((item2) => {
+                  if (item2._id == id2) {
+                    item2.isShowReply = !item2.isShowReply;
+                  }
+                })
               }
-              return item;
             })
           }
         },
         //点击点赞按钮
-        async support(value,idx){
+        async support(value,idx,level,id2){
+          console.log(value, idx, level, id2);
           let time = new Date();
           if(time-this.time < 1300){
             return
           }
           //取消点赞
-          if(value === 'el-icon-star-on'){
-            await support(false,this.commentList[idx]._id)
-            this.commentList[idx].userComments.isSupport = 'el-icon-star-off'
-          }else{
-            //点赞
-            await support(true,this.commentList[idx]._id)
-            this.commentList[idx].userComments.isSupport = 'el-icon-star-on'
+          if(level === 'first'){
+            if(value == 'el-icon-star-on'){
+              await support(false,this.commentList[idx]._id,level)
+              this.commentList[idx].userComments.isSupport = 'el-icon-star-off'
+            }else{
+              //点赞
+              await support(true,this.commentList[idx]._id,level)
+              this.commentList[idx].userComments.isSupport = 'el-icon-star-on'
+            }
+          }else {
+            if(value == 'el-icon-star-on'){
+              await support(false,this.commentList[idx]._id,level,id2)
+              this.commentList[idx].userComments.reply.map((item)=>{
+                if(item._id == id2){
+                  item.replyIsSupport = 'el-icon-star-off'
+                }
+              })
+            }else{
+              //点赞
+              await support(true,this.commentList[idx]._id,level,id2)
+              this.commentList[idx].userComments.reply.map((item)=>{
+                if(item._id == id2){
+                  item.replyIsSupport = 'el-icon-star-on'
+                }
+              })
+            }
           }
           this.time = time
           const data = await getComment()
@@ -125,6 +145,15 @@
             }else{
               item.userComments.isSupport = 'el-icon-star-on'
             }
+            item.userComments.reply.map((item1)=>{
+              if(!item1.replyIsSupport){
+                item1.replyIsSupport = 'el-icon-star-off'
+              }else{
+                item1.replyIsSupport = 'el-icon-star-on'
+              }
+              item1.replyTime = getTime(item1.replyTime);
+              return item1
+            })
             return item;
           })
         },
@@ -135,7 +164,9 @@
           const time = getTime(new Date())
           reply(value,id,user,time);
         },
-        currReply(){}
+        async commitCurrReply(id){
+
+        }
       },
       async created(){
         if( getCookie('userinfo') ){
@@ -143,23 +174,22 @@
         }else {
           this.bgText = '请先登录再评论'
         }
-        // const replyCon = await replyContent();
         const data = await getComment()
-        console.log(data);
         this.commentList = data.data
         this.commentList = this.commentList.map((item)=>{
           item.userComments.commentTime = getTime(item.userComments.commentTime)
-          console.log(item.userComments.reply);
           item.userComments.reply = item.userComments.reply.map((item1)=>{
+            item1.replyTime = getTime(item1.replyTime)
+            item1.isShowReply = false;
+            //保持点赞图标不消失
             if(!item1.replyIsSupport){
-              console.log(1);
               item1.replyIsSupport = 'el-icon-star-off'
             }else{
-              console.log(2);
               item1.replyIsSupport = 'el-icon-star-on'
             }
             return item1
           })
+          item.userComments.isShow = false
           if(!item.userComments.isSupport){
             item.userComments.isSupport = 'el-icon-star-off'
           }else{
@@ -168,8 +198,10 @@
           return item;
         })
       },
-      mounted(){
-      }
+      //回复框初始化
+      // beforeCreate(){
+      //   initBox();
+      // },
     }
 </script>
 
