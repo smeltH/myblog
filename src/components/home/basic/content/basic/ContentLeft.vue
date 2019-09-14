@@ -21,13 +21,13 @@
         <div class="other-title">
           <h2>最新文章</h2>
         </div>
-        <div class="article-lists" v-for="(article,index) in getArticlelist">
+        <div class="article-lists" v-for="(article,index) in getArticleList">
           <articles>
             <h2 slot="title">{{article.title}}</h2>
             <p slot="description">{{article.description}}</p>
             <span slot="time">{{article.releaseTime}}</span>
             <span slot="hot">{{article.hotNumber}}</span>
-            <span slot="comments">{{article.comments.length}}</span>
+            <span slot="comments">{{article.comments}}</span>
             <span slot="support">{{article.supportNumber}}</span>
             <i class="iconfont icon-iconfont-zd" slot="isTop" v-if="article.isTop"></i>
             <router-link slot="readMore" :to="{name:'detaillink',params:{id:article._id}}" class="read-more" tag="button">查看全文</router-link>
@@ -51,60 +51,95 @@
   import TopAndButtom from 'public/TopAndButtom'
   import FiveArticles from 'public/FiveArticles'
   import {getTime} from "../../../../../static/js/getTime";
+  import {getCategory,getFirstCategoryArcticle} from "../../../../../api/home";
 
   export default {
       name: "ContentLeft",
       data() {
           return {
-            activeName: 0,
-            articleData:[],
-            count1:4,
-            articles:[
-              {}
-            ],
-            count2:1,
-            currentPage:0,
-            totalCounts:0,
-            maxPages:0,
-            getArticlelist:[]
+            activeName: 0,//当前tab栏的下标
+            articleData:[],//每个tab栏里面的内容
+            count1:4,//最新文章显示上面的tab分类文章条数限制
+            // articles:[
+            //   {}
+            // ],
+            count2:5,//最新文章显示条数
+            currentPage:0,//当前页的位置
+            totalCounts:0,//文章的总数
+            maxPages:0,//最后一页
+            // getArticlelist:[]
           }
       },
       async created(){
+        // this.getFilterCategory
         const articletype = this.$route.query.articletype
-        const {data:{data,maxPages,totalCounts}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count2})
-        const {} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1})
+        if( articletype ){
+          this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1}).then((result)=>{
+            this.$store.commit('saveArticleList',result.data.data)
+            this.maxPages = result.data.maxPages;
+            this.totalCounts = result.data.totalCounts;
+          })
+        }else {
+          this.$store.dispatch('getArticleLists',{page:0,count:this.count2})
+        }
+        console.log(articletype);
+
+        /*
+        * 获取分类文章
+        * data：文章内容 array
+        * maxPages：文章最后一页 number
+        * totalCounts 文章总共数 number
+        * */
+        const {data:{data,maxPages,totalCounts}} = await getCategory(articletype,this.count2)
+        // this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:})
+        // const {} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1})
         // 上面的分类面板赋值
-        this.articleData = data
-        const arr1 = [],
-              arr2 = [];
+        this.articleData = data;
         data.map((item)=>{
           item.releaseTime = getTime(item.releaseTime)
-          if(item.isTop){
-            arr1.push(item)
-          }else {
-            arr2.push(item)
-          }
         })
-        const results = arr1.concat(arr2)
-        this.getArticlelist = results;
+        // this.getArticlelist = results;
         this.maxPages = maxPages;
         this.totalCounts = totalCounts;
       },
+      /*
+      * 给分类tab出获取数据并进行渲染
+      * */
+      async mounted(){
+        const {data:{data}} = await getFirstCategoryArcticle(this.$store.state.category,{count:this.count2,page:0})
+        this.articleData = data;
+      },
       computed:{
-        // 获取文章分类
+        /*
+        *  获取文章分类
+        * */
         getCategory(){
           return this.$store.state.category;
+        },
+        /*
+        * 获取文章列表
+        *   在HomePage初始化时就请求了文章数据，将文章数据保存到store中
+        * */
+        getArticleList(){
+          return this.$store.state.articleList
         }
       },
       methods: {
-        //切换页面按钮
+        /*
+        * 最新文章处的分页点击事件触发
+        * val是点击了第几页 从1开始
+        * */
         async handleCurrentChange(val) {
-          const query = this.$route.query.articletype
-          const {data:{data,maxPages,totalCounts}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${query}`,{count:this.count2,page:val-1})
-          this.getArticlelist = data
+          this.$store.dispatch('getArticleLists',{count:this.count2,page:val-1});
+          // const query = this.$route.query.articletype
+          // const {data:{data,maxPages,totalCounts}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${query}`,{count:this.count2,page:val-1})
+          // this.getArticlelist = data
         },
-        // 上面的分类栏里面的点击事件
+        /*
+        * 上面的分类栏里面的点击事件
+        * */
         async handleClick(tab) {
+          this.getFilterCategory
           const {data:{data}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${tab.label}`,{count:this.count1})
           this.articleData = data
         }
@@ -115,25 +150,30 @@
         Articles
       },
       watch:{
+        /*
+        * 监听query参数的变化,即点击头部的分类标签数据发生变化
+        * */
         '$route.query'(){
+          // const articletype = this.$route.query.articletype
           const articletype = this.$route.query.articletype
-          this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1}).then((result)=>{
-            console.log(result.data);
-            const arr1 = [],
-              arr2 = [];
-            result.data.data.map((item)=>{
-              item.releaseTime = getTime(item.releaseTime)
-              if(item.isTop){
-                arr1.push(item)
-              }else {
-                arr2.push(item)
-              }
+          if( articletype ){
+            this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1}).then((result)=>{
+              this.$store.commit('saveArticleList',result.data.data)
+              this.maxPages = result.data.maxPages;
+              this.totalCounts = result.data.totalCounts;
             })
-            const results = arr1.concat(arr2)
-            this.getArticlelist = results;
-            this.maxPages = result.data.maxPages;
-            this.totalCounts = result.data.totalCounts;
-          })
+          }else {
+            this.$store.dispatch('getArticleLists',{page:0,count:this.count2})
+          }
+        }
+      },
+      filters:{
+        getFilterCategory(){
+          // if(  ){
+          //
+          // }
+          console.log(this.$store.state.articleList);
+          return this.$store.state.articleList
         }
       }
     }

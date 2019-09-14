@@ -50,13 +50,13 @@
     data() {
       return {
         form: {
-          title: '',
-          author: '',
-          categorys:[],
-          description: '',
-          content: '',
-          isTop:false,
-          isRecommend:false
+          title: '',//文章标题
+          author: '',//文章作者
+          categorys:[],//文章分类
+          description: '',//文章简介
+          content: '',//文章内容
+          isTop:false,//文章是否置顶
+          isRecommend:false//文章是否推荐
         }
       }
     },

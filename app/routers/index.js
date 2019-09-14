@@ -7,13 +7,42 @@ const Article = require('../schema/article');
 const Comment = require('../schema/comment')
 const DeleteArticle = require('../schema/deletearticle');
 const returnData = {};
-//获取文章列表
+/*
+* 获取文章列表
+* page:第几页
+* count:每页几条消息
+* maxPages:一共有多少页
+* 返回值：
+*   data:文章内容
+*   totalCounts:文章总数
+*   maxPages:最后一页
+* */
 router.post('/getArticleLists',(req,res)=>{
   const {page,count} = req.body;
+  let articleLists = [];//文件列表数组
   Article.countDocuments().then((totalCounts)=>{
     let maxPages = Math.ceil(totalCounts/count);
-    Article.find().populate('tag').limit(count).skip(page*count).sort({'_id':-1}).then((result)=>{
-      res.send({data:result,totalCounts,maxPages})
+    Article.find().populate('tag').sort({'_id':-1}).then((result)=>{
+      /*
+      * 判断是否置顶并调整顺序
+      * */
+      result.map((item)=>{
+        item.releaseTime = new Date(item.releaseTime).toLocaleString()
+        if(item.isTop){
+          articleLists.push(item)
+        }
+      })
+      result.map((item1)=>{
+        if(!item1.isTop){
+          articleLists.push(item1)
+        }
+      })
+      if(page+1<maxPages){
+        articleLists = articleLists.slice(page*count,(page+1)*count)
+      }else {
+        articleLists = articleLists.slice(page*count)
+      }
+      res.send({data:articleLists,totalCounts,maxPages})
     })
   })
 })

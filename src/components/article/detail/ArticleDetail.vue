@@ -56,7 +56,7 @@
       const _id = this.$route.params.id
       const {data} = await this.$axios.post('/api/index/articleDetail',{_id})
       data.releaseTime = getTime(data.releaseTime)
-      data.commentNumber = data.comments.length
+      data.commentNumber = data.comments
       console.log(data);
       this.detail = data
     }

@@ -16,6 +16,10 @@
     components:{
       HomeHeader,
       HomeContent
+    },
+    created(){
+      // //页面渲染前将所有的文章列表添加到store里面
+      // this.$store.dispatch('getArticleLists',{page:0,count:5})
     }
   }
 </script>

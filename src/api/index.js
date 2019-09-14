@@ -5,7 +5,6 @@ const commitComment = (value)=>{
   return Axios.post('/api/index/commitComment',value)
 }
 
-
 //获得用户评论
 const getComment = ()=>{
   return Axios.post('/api/index/releaseComment')
@@ -17,7 +16,6 @@ const support = (value,id,level,id2)=>{
   return Axios.get(`/api/index/support?newState=${value}&id=${id}&who=${level}&secondId=${id2}`)
 }
 
-
 //提交用户回复内容
 const reply = (value,id,user,time) =>{
   return Axios.post('/api/index/reply',{
@@ -28,13 +26,17 @@ const reply = (value,id,user,time) =>{
   })
 }
 
+//用户回复内容
 const replyContent = (id) => {
   return Axios.post('/api/index/replyContent',{
     id
   })
 }
+
 //回复框初始化
 const initBox = () => {
   return Axios.get('/api/index/initBox');
 }
+
+
 export {getComment,commitComment,support,reply,replyContent,initBox}
