@@ -76,6 +76,7 @@ const commentSchemea = mongoose.Schema({
             type:Boolean,
             default:false
           },
+          //回复的用户名
           replyUsered:{
             type:String,
             default:''

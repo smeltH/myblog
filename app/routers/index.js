@@ -90,8 +90,16 @@ router.post('/commitComment',(req,res)=>{
   new Comment({
     article:articleId,
     userComments:{commentContent:releaseContent,commentUser:releaseUser}
-  }).save();
-  res.send('1')
+  }).save().then(()=>{
+    Comment.find().then(result=>{
+      returnData.result = result;
+      returnData.msg = "操作成功"
+      returnData.statements = 0
+      res.send(returnData)
+    })
+  }).catch((err)=>{
+    throw err;
+  });
 })
 
 //返回已产生文章评论
@@ -174,12 +182,12 @@ router.get('/support',(req,res)=>{
 
 //用户回复
 router.post('/reply',(req,res)=>{
-  const {replyUser,replyContent,id} = req.body;
+  const {replyUser,replyContent,id,replyUsered} = req.body;
   Comment.findOne({_id:id}).then(result=>{
     if(result.userComments.reply === false){
       result.userComments.isReply = true
     }
-    result.userComments.reply.push({replyContent,replyUser})
+    result.userComments.reply.push({replyContent,replyUser,replyUsered})
     Comment.updateOne({_id:id},{userComments:result.userComments},(err)=>{
       if(err){
         returnData.msg = "操作失败"
@@ -187,9 +195,12 @@ router.post('/reply',(req,res)=>{
         res.send(returnData)
         return
       }
-      returnData.msg = "操作成功"
-      returnData.statements = 0
-      res.send(returnData)
+      Comment.find().then(result=>{
+        returnData.result = result;
+        returnData.msg = "操作成功"
+        returnData.statements = 0
+        res.send(returnData)
+      })
     })
   })
 })
@@ -199,6 +210,32 @@ router.post('/replyContent',(req,res)=>{
   const {id} = req.body;
   Comment.findOne({_id:id}).then((result)=>{
     res.send(result)
+  })
+})
+
+
+router.post('/secondReplyContent',(req,res)=>{
+  const {firstId,secondId,perUser,nowUser,value} = req.body;
+  Comment.findOne({_id:firstId}).then((result)=>{
+    const newData = {};
+    newData.replyUsered = perUser
+    newData.replyUser = nowUser
+    newData.replyContent = value
+    result.userComments.reply = result.userComments.reply.concat(newData)
+    Comment.updateOne({_id:firstId},{userComments:result.userComments},(err)=>{
+      if(err){
+        returnData.msg = "操作失败"
+        returnData.statements = 1
+        res.send(returnData)
+        return
+      }
+      Comment.find().then(result1=>{
+        returnData.result = result1;
+        returnData.msg = "操作成功"
+        returnData.statements = 0
+        res.send(returnData)
+      })
+    })
   })
 })
 //

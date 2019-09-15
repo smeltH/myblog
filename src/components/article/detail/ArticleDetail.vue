@@ -8,18 +8,18 @@
           发布时间：<span class="time">{{detail.releaseTime}}</span>
           作者：<span class="author">{{detail.author}}</span>
           阅读数：<span class="hot">{{detail.hotNumber}}</span>
-          评论数：<span class="comment">{{detail.commentNumber}}</span>
+          <!--评论数：<span class="comment">{{detail.comments.length}}</span>-->
           点赞数：<span class="support">{{detail.supportNumber}}</span>
         </div>
         <div v-html="detail.content" class="content"></div>
         <div class="article-comments">
           <div class="comment-box">
-            <div class="publishing">
-              <comment-box :articleId="detail._id"></comment-box>
-            </div>
-            <div class="published">
-              <user-comment></user-comment>
-            </div>
+            <!--<div class="publishing">-->
+              <!--<comment-box :articleId="detail._id"></comment-box>-->
+            <!--</div>-->
+            <!--<div class="published">-->
+              <user-comment :articleId="detail._id"></user-comment>
+            <!--</div>-->
           </div>
         </div>
       </div>
@@ -55,8 +55,8 @@
     async created(){
       const _id = this.$route.params.id
       const {data} = await this.$axios.post('/api/index/articleDetail',{_id})
-      data.releaseTime = getTime(data.releaseTime)
-      data.commentNumber = data.comments
+      // data.releaseTime = getTime(data.releaseTime)
+      // data.commentNumber = data.comments
       console.log(data);
       this.detail = data
     }

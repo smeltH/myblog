@@ -33,6 +33,7 @@
             <router-link slot="readMore" :to="{name:'detaillink',params:{id:article._id}}" class="read-more" tag="button">查看全文</router-link>
           </articles>
         </div>
+        <!--文章分页跳转部分-->
         <div class="block">
           <el-pagination
             @current-change="handleCurrentChange"

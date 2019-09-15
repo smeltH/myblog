@@ -9,7 +9,7 @@
 
 <script>
   import {getCookie} from "../../../../static/js/getCookie";
-  import {commitComment} from "../../../../api";
+  // import {commitComment} from "../../../../api";
 
   export default {
       name: "CommentBox",

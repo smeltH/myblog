@@ -29,10 +29,10 @@ const articleSchemea = mongoose.Schema({
     type:Boolean,
     default: false
   },//是否推荐
-  commentNumber:{
-    type:Number,
-    default:0
-  },//评论数
+  comments:[{
+    type:Schema.Types.ObjectId,
+    ref:'comments'
+  }]
 })
 module.exports = mongoose.model('articlelists',articleSchemea)
 

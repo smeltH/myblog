@@ -27,7 +27,6 @@ export default new Vuex.Store({
     *
     */
     saveArticleList(state,value){
-      console.log(value);
       state.articleList = value
     }
   },
