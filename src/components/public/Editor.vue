@@ -1,97 +1,34 @@
 <template>
-    <froala :config="config"></froala>
+    <div class="editor">
+        <mark-down :initialValue="originContent" @sendContent="submitContent"></mark-down>
+    </div>
 </template>
 
 <script>
+    import MarkDown from 'vue-meditor'
     export default {
-      name: "Editor",
-      data() {
-          return {
-            editor:null,
-            config:{
-              zIndex: 2501,
-              height: "310",
-              toolbarSticky: false,
-              autofocus: true,
-              toolbarButtons: [
-                "fullscreen",
-                "bold",
-                "italic",
-                "underline",
-                "strikeThrough",
-                "subscript",
-                "superscript",
-                "|",
-                "fontFamily",
-                "fontSize",
-                "color",
-                "inlineClass",
-                "inlineStyle",
-                "paragraphStyle",
-                "lineHeight",
-                "|",
-                "paragraphFormat",
-                "align",
-                "formatOL",
-                "formatUL",
-                "outdent",
-                "indent",
-                "quote", 
-                "-",
-                "insertLink",
-                "insertImage",
-                "insertVideo",
-                "embedly",
-                "insertFile",
-                "insertTable",
-                "|",
-                "emoticons",
-                "fontAwesome",
-                "specialCharacters",
-                "insertHR",
-                "selectAll",
-                "clearFormatting",
-                "|",
-                "print",
-                "getPDF",
-                "spellChecker",
-                "help",
-                "html",
-                "|",
-                "undo",
-                "redo"
-              ],
-              placeholder: '请填写内容',
-              language: "zh_cn",
-              imageDefaultWidth: 500, 
-              // imageUploadURL: "xxxxxxxx",
-              // videoUploadURL: "xxxxxxx",
-              // fileUploadURL: "xxxxxxx",
-              // imageManagerLoadURL:"xxxxxx",
-              requestHeaders: {
-                Authorization: localStorage.eleToken
-              },
-              events: { 
-                "froalaEditor.initialized": (e, editor) => {
-                  this.editor = editor;
-                },
-                "froalaEditor.contentChanged": (e, editor) => {
-                  this.$emit("on-change", editor.html.get(true));
-                },
-              }
+        name: "Editor",
+        data() {
+            return {
             }
-          }
-      },
-      methods: {
-        setHtml(html) {
-          if (this.editor) {
-            this.editor.html.set(html)
-          }
+        },
+        props:[
+            'resultContent',
+            'originContent'
+        ],
+        methods: {
+            submitContent(){
+                this.$emit('sendContent', this.originContent);
+            }
+        },
+        components: {
+            MarkDown
         }
-      }
     }
 </script>
 
 <style scoped lang="less">
-
+    .editor{
+        border: 1px solid #C0C4CC;
+    }
 </style>

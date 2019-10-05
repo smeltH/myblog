@@ -8,8 +8,6 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-
-
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
@@ -25,13 +23,14 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
+      /* eslint quote-props:0 */
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'header': resolve('src/components/home/basic/header'),
       'content': resolve('src/components/home/basic/content'),
       'public': resolve('src/components/public'),
       'article': resolve('src/components/article'),
-      'admin': resolve('src/components/admin'),
+      'admin': resolve('src/components/admin')
     }
   },
   module: {
@@ -72,7 +71,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        loader: "style-loader!css-loader!less-loader"
+        loader: 'style-loader!css-loader!less-loader'
       }
     ]
   },
