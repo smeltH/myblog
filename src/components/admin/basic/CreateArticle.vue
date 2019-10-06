@@ -49,7 +49,7 @@
                 </el-form-item>
             </div>
             <el-form-item label="文章内容" class="content">
-                <editor></editor>
+                <mark-down :initialValue="form.content"></mark-down>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">发布文章</el-button>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-    import Editor from 'public/Editor'
+    import MarkDown from 'vue-meditor'
     export default {
         name: "CreateArticle",
         data() {
@@ -77,7 +77,7 @@
             }
         },
         components:{
-            Editor
+            MarkDown
         },
         computed:{
             categoryArr(){

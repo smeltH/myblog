@@ -51,10 +51,10 @@
                 </el-form-item>
             </div>
             <el-form-item label="文章内容" class="content">
-                <editor :originContent="form.content" @submitContent="getContent"></editor>
+                <mark-down :initialValue="form.content" @on-save="aaaa" ref="markDown"></mark-down>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit">更新文章</el-button>
+                <el-button type="primary" @click="onSubmit" >更新文章</el-button>
                 <el-button>取消</el-button>
             </el-form-item>
         </el-form>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-    import Editor from 'public/Editor'
+    import MarkDown from 'vue-meditor'
     export default {
         name: "EditArticle",
         data() {
@@ -81,7 +81,7 @@
             }
         },
         components:{
-            Editor
+                MarkDown
         },
         async created(){
             const {data} = await this.$axios.post('/api/admin/findArticle',{_id:this.$route.query.id})
@@ -98,10 +98,11 @@
             }
         },
         methods: {
-            getContent(content){
+            aaaa(content){
                 console.log(content);
             },
             async onSubmit() {
+                this.form.content = this.$refs['markDown'].html
                 let newForm = JSON.stringify(this.form)
                 if(newForm === this.oldform){
                     this.$message({

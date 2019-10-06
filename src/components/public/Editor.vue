@@ -1,6 +1,6 @@
 <template>
     <div class="editor">
-        <mark-down :initialValue="originContent" @sendContent="submitContent"></mark-down>
+        <mark-down :initialValue="originContent" @blur="submitContent"></mark-down>
     </div>
 </template>
 
@@ -18,6 +18,7 @@
         ],
         methods: {
             submitContent(){
+                console.log(1);
                 this.$emit('sendContent', this.originContent);
             }
         },
