@@ -91,6 +91,7 @@ router.post('/commitComment', (req, res) => {
         userComments: { commentContent: releaseContent, commentUser: releaseUser }
     }).save().then(() => {
         Comment.find().then(result => {
+            console.log(result);
             returnData.result = result;
             returnData.msg = '操作成功';
             returnData.statements = 0;
@@ -104,7 +105,7 @@ router.post('/commitComment', (req, res) => {
 // 返回已产生文章评论
 router.post('/releaseComment', (req, res) => {
     const { id } = req.body;
-    Comment.find({ _id: id }).then(result => {
+    Comment.find().then(result => {
         console.log(result);
         res.send(result);
     });

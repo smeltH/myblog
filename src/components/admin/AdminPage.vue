@@ -96,7 +96,7 @@
             flex: 1;
             padding: 10px 0 0 30px;
             box-sizing: border-box;
-            overflow: hidden;
+            /*overflow: hidden;*/
             .isOut{
                 position: absolute;
                 top: 12px;

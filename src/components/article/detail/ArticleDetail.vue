@@ -11,7 +11,7 @@
           <!--评论数：<span class="comment">{{detail.comments.length}}</span>-->
           点赞数：<span class="support">{{detail.supportNumber}}</span>
         </div>
-        <div v-html="detail.content" class="content"></div>
+        <markdown-it-vue :content="detail.content"/>
         <div class="article-comments">
           <div class="comment-box">
             <!--<div class="publishing">-->
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+  import MarkdownItVue from 'markdown-it-vue'
   import {getTime} from "../../../static/js/getTime";
   import HomeHeader from 'header/HomeHeader'
   import ContentRight from 'content/basic/ContentRight'
@@ -48,7 +49,8 @@
       HomeHeader,
       ContentRight,
       UserComment,
-      CommentBox
+      CommentBox,
+      MarkdownItVue
     },
     methods:{
     },
