@@ -11,7 +11,7 @@
           <!--评论数：<span class="comment">{{detail.comments.length}}</span>-->
           点赞数：<span class="support">{{detail.supportNumber}}</span>
         </div>
-        <markdown-it-vue :content="detail.content"/>
+        <markdown-it-vue :content="detail.content" :options="options"/>
         <div class="article-comments">
           <div class="comment-box">
             <!--<div class="publishing">-->
@@ -40,6 +40,32 @@
     name: "ArticleDetail",
     data() {
       return {
+        options:{
+          markdownIt: {
+            linkify: true,
+            html: true
+          },
+          linkAttributes: {
+            attrs: {
+              target: '_self',
+              rel: 'noopener'
+            }
+          },
+          katex: {
+            throwOnError: false,
+            errorColor: '#cc0000'
+          },
+          icons: 'font-awesome',
+          githubToc: {
+            tocFirstLevel: 2,
+            tocLastLevel: 3,
+            tocClassName: 'toc',
+            anchorLinkSymbol: '',
+            anchorLinkSpace: false,
+            anchorClassName: 'anchor',
+            anchorLinkSymbolClassName: 'octicon octicon-link'
+          }
+        },
         detail:{
           isLogin:false,
         },

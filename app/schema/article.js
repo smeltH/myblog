@@ -7,6 +7,7 @@ const articleSchemea = mongoose.Schema({
     }, // 所属分类,多表关联查询
     title: String, // 文章标题
     content: String, // 文章内容
+    contentHtml: String,
     description: String, // 文章简介
     author: String, // 文章作者
     releaseTime: {
