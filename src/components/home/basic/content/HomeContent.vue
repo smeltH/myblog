@@ -22,7 +22,7 @@
 
 <style scoped>
   .home-content{
-    width:1300px;
+    width: 1370px;
     display: flex;
     margin: 0 auto;
     justify-content: space-between;

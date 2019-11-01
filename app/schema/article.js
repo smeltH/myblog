@@ -30,9 +30,26 @@ const articleSchemea = mongoose.Schema({
         type: Boolean,
         default: false
     }, // 是否推荐
-    comments: [{
-        type: Schema.Types.ObjectId,
-        ref: 'comments'
-    }]
+    comments: {
+        type: Array,
+        default: {
+            releaseUser: {
+                type: Schema.Types.ObjectId,
+                default: '无名氏'
+            },
+            releaseTime: {
+                type: Date,
+                default: Date.now
+            },
+            releaseContent: {
+                type: String,
+                default: ''
+            },
+            avatarImg: {
+                type: String,
+                default: ''
+            }
+        }
+    }
 });
 module.exports = mongoose.model('articlelists', articleSchemea);

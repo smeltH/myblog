@@ -9,77 +9,45 @@
             </div>
         </div>
         <div class="published">
-            <div v-for="(comment,idx) in commentList" :key="idx">
-                <div class="user-comment">
-                    <div class="per-comment">
-                        <div class="left-img">
-                            <img src="" alt="">
-                        </div>
-                        <div class="right-comment-content">
-            <span class="user-name">
-                {{comment.userComments.commentUser}}
-            </span>
-                            <p class="per-comment-content">
-                                {{comment.userComments.commentContent}}
-                            </p>
-                            <div class="per-comment-info">
-                                <span class="per-time">{{comment.userComments.commentTime}}</span>
-                                <div>
-                                    <span class="support" @click="support(comment.userComments.isSupport,idx,'first')"><i :class="comment.userComments.isSupport"></i>{{comment.userComments.commentSupport}}</span>
-                                    <span class="reply" @click="reply(!comment.userComments.isShow,comment._id,'first')">回复<i class="el-icon-chat-round"></i></span>
-                                </div>
-                            </div>
-                            <div class="reply-box" v-if="comment.userComments.isShow">
-                                <textarea class="reply-content" :placeholder="bgText" :ref="comment._id"></textarea>
-                                <div class="btn">
-                                    <button class="commit-reply" @click="commitReply(comment._id)">添加回复</button>
-                                </div>
-                            </div>
+            <div v-for="item,index in getCommentList" :key="index">
+                <div class="comment-lists">
+                    <div class="left"><img src="" alt=""></div>
+                    <div class="right">
+                        <h6>
+                            <span class="time">{{item.releaseTime}}</span><span class="user-name">{{item.releaseUser}}</span>
+                        </h6>
+                        <input type="checkbox" :id="index" class="toggle">
+                        <div>
+                            <p class="content">{{item.releaseContent}}</p>
+                            <label :for="index">
+                                <span class="show">展开</span>
+                                <span class="hide">收起</span>
+                            </label>
                         </div>
                     </div>
                 </div>
-                <div class="line" v-if="!comment.userComments.reply.length"></div>
-                <div class="other-comments" v-if="comment.userComments.reply.length">
-                    <div class="per-comment" v-for="(replyCurr,index) in comment.userComments.reply" :key="index">
-                        <div class="left-img">
-                            <img src="" alt="">
-                        </div>
-                        <div class="right-comment-content">
-                <span class="user-name">
-                  {{replyCurr.replyUser}}
-                </span>
-                            <p class="per-comment-content" ref="userComment">{{replyCurr.replyContent}}
-                            </p>
-                            <div class="per-comment-info">
-                                <span class="per-time">{{replyCurr.replyTime}}</span>
-                                <div>
-                                    <span class="support" @click="support(replyCurr.replyIsSupport,idx,'second',replyCurr._id)"><i :class="replyCurr.replyIsSupport"></i>{{replyCurr.replySupport}}</span>
-                                    <span class="reply" @click="reply(!replyCurr.isShowReply,comment._id,'second',replyCurr._id,comment.userComments.commentUser)">回复<i class="el-icon-chat-round"></i></span>
-                                </div>
-                            </div>
-                            <div class="reply-box" v-if="replyCurr.isShowReply">
-                                <textarea class="reply-content" :placeholder="bgText" :ref="replyCurr._id"></textarea>
-                                <div class="btn">
-                                    <button class="commit-reply" @click="commitCurrReply(replyCurr._id,comment._id,replyCurr.replyUser)">添加回复</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="line" v-if="comment.userComments.reply.length"></div>
             </div>
+            <el-pagination
+                small
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                layout="total, prev, pager, next"
+                :page-size="commentCount"
+                :total="commentLists.length"
+                hide-on-single-page>
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
     import {getCookie} from "../../../../static/js/getCookie";
-    import {getComment,support,reply,replyContent,initBox,commitComment,secondReplyContent} from "../../../../api/home/index";
+    import {commitComment, getComment} from "../../../../api/home/index";
     import {getTime} from "../../../../static/js/getTime";
 
     export default {
         name: "UserComment",
-        props:['articleId'],
+        props:['commentLists', 'articleId'],
         data() {
             return {
                 isReply:false,
@@ -87,49 +55,38 @@
                 isOtherReply:true,
                 commentList:[],
                 isSupp:false,
-                time:new Date()
+                time:new Date(),
+                commentCount: 5,
+                currentPage: 1,
+                currentComment: []
             }
         },
         methods:{
             /*
             * 用户评论发布
             * */
-            releaseComment(){
-                const userName = JSON.parse(getCookie('userinfo')).username
+            async releaseComment(){
+                if (!getCookie('userinfo')) {
+                    this.$router.push({path:'/login', name:'loginlink'})
+                   return
+                }
+                const userName = JSON.parse(getCookie('userinfo')).username;
                 if(this.$refs.releaseValue.value){
-                    commitComment({releaseContent:this.$refs.releaseValue.value,articleId:this.articleId,releaseUser:userName}).then((result)=>{
-                        const {data} = result;
-                        if( data.statements === 0 ){
-                            this.commentList = this.commentList.map((item)=>{
-                                item.userComments.commentTime = getTime(item.userComments.commentTime)
-                                item.userComments.reply = item.userComments.reply.map((item1)=>{
-                                    item1.replyTime = getTime(item1.replyTime)
-                                    item1.isShowReply = false;
-                                    //保持点赞图标不消失
-                                    if(!item1.replyIsSupport){
-                                        item1.replyIsSupport = 'el-icon-star-off'
-                                    }else{
-                                        item1.replyIsSupport = 'el-icon-star-on'
-                                    }
-                                    return item1
-                                })
-                                item.userComments.isShow = false
-                                if(!item.userComments.isSupport){
-                                    item.userComments.isSupport = 'el-icon-star-off'
-                                }else{
-                                    item.userComments.isSupport = 'el-icon-star-on'
-                                }
-                                return item;
-                            })
-                            this.commentList = data.result.reverse();
-                            this.$refs.releaseValue.value = '';
-                            this.bgText = '开始评论'
-                            this.$message({
-                                type: 'success',
-                                message: '评论发布成功'
-                            });
-                        }
-                    })
+                    const {data} = await commitComment({releaseContent:this.$refs.releaseValue.value,articleId:this.articleId,releaseUser:userName});
+                    if( data.statements === 0 ){
+                        this.$message({
+                            type: 'success',
+                            message: data.msg
+                        });
+                    }else{
+                        this.$message({
+                            type: 'info',
+                            message: data.msg
+                        });
+                    }
+                    setTimeout(() => {
+                        this.$refs.releaseValue.value = '';
+                    },200)
                 }else{
                     this.$message({
                         type: 'info',
@@ -137,160 +94,11 @@
                     });
                 }
             },
-            //点击回复按钮
-            async reply(value,id,level,id2){
-                let time = new Date();
-                if(getCookie('userinfo')) {
-                    this.commentList.map((item1) => {
-                        if (level === 'first') {
-                            if (item1._id == id) {
-                                item1.userComments.isShow = !item1.userComments.isShow;
-                            }
-                        } else {
-                            item1.userComments.reply.map((item2) => {
-                                if (item2._id == id2) {
-                                    item2.isShowReply = !item2.isShowReply;
-                                }
-                            })
-                        }
-                    })
-                }
+            handleSizeChange(){
+                this.currentPage++;
             },
-            //点击点赞按钮
-            async support(value,idx,level,id2){
-                let time = new Date();
-                if(time-this.time < 1300){
-                    return
-                }
-                //取消点赞
-                if(level === 'first'){
-                    if(value == 'el-icon-star-on'){
-                        await support(false,this.commentList[idx]._id,level)
-                        this.commentList[idx].userComments.isSupport = 'el-icon-star-off'
-                    }else{
-                        //点赞
-                        await support(true,this.commentList[idx]._id,level)
-                        this.commentList[idx].userComments.isSupport = 'el-icon-star-on'
-                    }
-                }else {
-                    if(value == 'el-icon-star-on'){
-                        await support(false,this.commentList[idx]._id,level,id2)
-                        this.commentList[idx].userComments.reply.map((item)=>{
-                            if(item._id == id2){
-                                item.replyIsSupport = 'el-icon-star-off'
-                            }
-                        })
-                    }else{
-                        //点赞
-                        await support(true,this.commentList[idx]._id,level,id2)
-                        this.commentList[idx].userComments.reply.map((item)=>{
-                            if(item._id == id2){
-                                item.replyIsSupport = 'el-icon-star-on'
-                            }
-                        })
-                    }
-                }
-                this.time = time
-                const data = await getComment()
-                this.commentList = data.data.reverse();
-                this.commentList = this.commentList.map((item)=>{
-                    console.log(item);
-                    item.userComments.reply = item.userComments.reply.reverse();
-                    item.userComments.commentTime = getTime(item.userComments.commentTime)
-                    if(!item.userComments.isSupport){
-                        item.userComments.isSupport = 'el-icon-star-off'
-                    }else{
-                        item.userComments.isSupport = 'el-icon-star-on'
-                    }
-                    item.userComments.reply.map((item1)=>{
-                        if(!item1.replyIsSupport){
-                            item1.replyIsSupport = 'el-icon-star-off'
-                        }else{
-                            item1.replyIsSupport = 'el-icon-star-on'
-                        }
-                        item1.replyTime = getTime(item1.replyTime);
-                        return item1
-                    })
-                    return item;
-                })
-            },
-            /*
-            * 一级评论内容提交
-            * */
-            async commitReply(id){
-                const value = this.$refs[id][0].value;
-                const user = JSON.parse(getCookie('userinfo')).username;
-                const time = getTime(new Date())
-                reply(value,id,user,time).then((result)=>{
-                    const {data} = result
-                    data.result = data.result.map((item)=>{
-                        item.userComments.reply = item.userComments.reply.reverse();
-                        return item;
-                    })
-                    this.commentList = data.result.reverse();
-                    this.commentList = this.commentList.map((item)=>{
-                        item.userComments.commentTime = getTime(item.userComments.commentTime)
-                        item.userComments.reply = item.userComments.reply.map((item1)=>{
-                            item1.replyTime = getTime(item1.replyTime)
-                            item1.isShowReply = false;
-                            //保持点赞图标不消失
-                            if(!item1.replyIsSupport){
-                                item1.replyIsSupport = 'el-icon-star-off'
-                            }else{
-                                item1.replyIsSupport = 'el-icon-star-on'
-                            }
-                            return item1
-                        })
-                        item.userComments.isShow = false
-                        if(!item.userComments.isSupport){
-                            item.userComments.isSupport = 'el-icon-star-off'
-                        }else{
-                            item.userComments.isSupport = 'el-icon-star-on'
-                        }
-                        return item;
-                    })
-                });
-            },
-            /*
-            * 二级评论内容提交
-            * id:二级回复的id
-            * firstId:一级回复的id
-            * oldUser:被回复的用户名
-            * */
-            async commitCurrReply(id,firstId,oldUser){
-                const value = this.$refs[id][0].value;
-                const nowUser = JSON.parse(getCookie('userinfo')).username
-                secondReplyContent(firstId,id,oldUser,nowUser,value).then((result)=>{
-                    const {data} = result
-                    if( data.statements === 0 ){
-                        data.result = data.result.map((item)=>{
-                            item.userComments.reply = item.userComments.reply.reverse();
-                            return item;
-                        })
-                        this.commentList = data.result.reverse();
-                        this.commentList = this.commentList.map((item)=>{
-                            item.userComments.commentTime = getTime(item.userComments.commentTime)
-                            item.userComments.reply = item.userComments.reply.map((item1)=>{
-                                item1.replyTime = getTime(item1.replyTime)
-                                item1.isShowReply = false;
-                                //保持点赞图标不消失
-                                if(!item1.replyIsSupport){
-                                    item1.replyIsSupport = 'el-icon-star-off'
-                                }else{
-                                    item1.replyIsSupport = 'el-icon-star-on'
-                                }
-                                return item1
-                            })
-                            item.userComments.isShow = false
-                            if(!item.userComments.isSupport){
-                                item.userComments.isSupport = 'el-icon-star-off'
-                            }else{
-                                item.userComments.isSupport = 'el-icon-star-on'
-                            }
-                            return item;
-                        })
-                    }
-                })
+            handleCurrentChange(val){
+                this.currentPage = val;
             }
         },
         async created(){
@@ -299,35 +107,14 @@
             }else {
                 this.bgText = '请先登录再评论'
             }
-            console.log(this);
-            const data = await getComment(this.articleId)
-            data.data = data.data.map((item)=>{
-                item.userComments.reply = item.userComments.reply.reverse();
-                return item;
-            })
-            this.commentList = data.data.reverse();
-            this.commentList = this.commentList.map((item)=>{
-                item.userComments.commentTime = getTime(item.userComments.commentTime)
-                item.userComments.reply = item.userComments.reply.map((item1)=>{
-                    item1.replyTime = getTime(item1.replyTime)
-                    item1.isShowReply = false;
-                    //保持点赞图标不消失
-                    if(!item1.replyIsSupport){
-                        item1.replyIsSupport = 'el-icon-star-off'
-                    }else{
-                        item1.replyIsSupport = 'el-icon-star-on'
-                    }
-                    return item1
-                })
-                item.userComments.isShow = false
-                if(!item.userComments.isSupport){
-                    item.userComments.isSupport = 'el-icon-star-off'
-                }else{
-                    item.userComments.isSupport = 'el-icon-star-on'
-                }
-                return item;
-            })
         },
+        computed:{
+            getCommentList:{
+                get(){
+                    return this.currentComment = this.commentLists.slice((this.currentPage-1) * this.commentCount, this.currentPage * this.commentCount)
+                }
+            }
+        }
         //回复框初始化
         // beforeCreate(){
         //   initBox();
@@ -372,14 +159,16 @@
             cursor: pointer;
         }
     }
-    .per-comment{
+    .comment-lists{
         width: 100%;
         display: flex;
         justify-content: space-between;
-        padding: 10px 0 10px;
-        .left-img{
+        padding: 4px 0 10px;
+        border-bottom: 1px dashed #ccc;
+        .left{
             width: 40px;
             height: 40px;
+            margin-top: 8px;
             border-radius: 100%;
             background-color: #ccc;
             img{
@@ -388,39 +177,61 @@
                 height: 100%;
             }
         }
-        .right-comment-content{
+        .right{
+            position: relative;
             padding-left: 20px;
             width: 100%;
-            .user-name{
-                font-size: 18px;
-                padding: 4px 0;
+            h6{
+                span{
+                    display: inline-block;
+                }
+                .user-name{
+                    font-size: 18px;
+                    padding: 4px 0 4px 20px;
+                }
+                .time{
+                    padding: 6px 0;
+                    font-size: 16px;
+                }
             }
-            .per-comment-content{
+            .content{
+                position: relative;
                 width: 100%;
                 font-size: 16px;
                 line-height: 24px;
+                word-break: break-all;
+                overflow: hidden;
             }
-            .per-comment-info{
-                display: flex;
-                justify-content: space-between;
-                padding: 6px 0;
+            label{
+                width: 34px;
+                height: 24px;
+                position: absolute;
+                right: 0;
+                bottom: 0;
                 font-size: 16px;
-                > div{
-                    width: 130px;
-                }
-                .support{
-                    padding-right: 24px;
-                }
-                .reply{
-                    user-select: none;
-                    i{
-                        padding-left: 4px;
-                    }
-                }
-                .support,
-                .reply{
-                    cursor: pointer;
-                }
+                padding-left: 8px;
+                background-color: #fff;
+                cursor: pointer;
+                user-select: none;
+            }
+            .toggle,
+            .hide,
+            .toggle:checked ~ div label .show{
+                position: absolute;
+                left: -9999px;
+            }
+            .toggle:checked ~ div label .hide{
+                position: static;
+            }
+            .toggle ~ div .content{
+                max-height: 48px;
+            }
+            .toggle:checked ~ div .content{
+                max-height: 9999px;
+            }
+            .user-name{
+                font-size: 18px;
+                padding: 4px 0;
             }
             .reply-box{
                 width: 100%;
@@ -466,21 +277,8 @@
             display: inline-block;
         }
     }
-    .line{
-        width: 100%;
-        height: 1px;
-        background-color:#ccc;;
-    }
-    .other-comments{
-        padding-left: 56px;
-        .per-comment{
-            background-color: #ccc;
-            border-radius: 8px;
-            margin: 10px 0;
-            .left-img{
-                margin-left: 10px;
-                background-color: pink;
-            }
-        }
+    .published /deep/ .el-pagination{
+        margin-top: 14px;
+        text-align: center;
     }
 </style>

@@ -70,17 +70,17 @@
         z-index: 99;
         width: 100%;
         height: 80px;
-        background-color: rgb(28,35,39);
+        background-color: #667ed3;
         color: #fff;
         .header{
             display: flex;
-            width: 1300px;
+            width: 1370px;
             height: 100%;
             margin: 0 auto;
             align-items: center;
             .grid-content {
                 height: 100%;
-                background-color: rgb(28,35,39);
+                background-color: #667ed3;
                 .blog-name,
                 .blog-enter{
                     height: 36px;
@@ -89,19 +89,23 @@
                 }
             }
             .el-col-16{
-                padding-right: 50px;
                 display: flex;
-                justify-content: center;
+                justify-content: left;
+                padding-left: 50px;
             }
             .el-col{
                 .classifies{
-                    display: inline-block;
+                    max-height: 80px;
+                    overflow: hidden;
                     .curr-classify{
                         display: inline-block;
                         height: 100%;
                         line-height: 80px;
-                        padding: 0 34px;
+                        padding: 0 20px;
                         cursor: pointer;
+                    }
+                    .curr-classify:first-child{
+                        padding-left: 0;
                     }
                     .curr-classify:hover{
                         color: #00c1de;

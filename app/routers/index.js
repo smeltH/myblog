@@ -79,6 +79,12 @@ router.post('/getCategoryArticles', (req, res) => {
 router.post('/articleDetail', (req, res) => {
     const { _id } = req.body;
     Article.findOne({ _id }).populate('tag').then((result) => {
+        result.hotNumber = result.hotNumber + 1;
+        Article.updateOne({ _id }, { $set: { hotNumber: result.hotNumber } }, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
         res.send(result);
     });
 });
@@ -86,71 +92,92 @@ router.post('/articleDetail', (req, res) => {
 // 保存用户评论
 router.post('/commitComment', (req, res) => {
     const { releaseContent, articleId, releaseUser } = req.body;
-    new Comment({
-        article: articleId,
-        userComments: { commentContent: releaseContent, commentUser: releaseUser }
-    }).save().then(() => {
-        Comment.find().then(result => {
-            console.log(result);
-            returnData.result = result;
-            returnData.msg = '操作成功';
+    const releaseTime = new Date();
+    Article.findOne({ _id: articleId }).then((result) => {
+        const newCommment = { releaseContent, releaseUser, releaseTime };
+        result.comments.push(newCommment);
+        Article.updateOne({ _id: articleId }, { $set: { comments: result.comments } }, (err) => {
+            if (err) {
+                returnData.msg = '评论失败，请稍后评论！';
+                returnData.statements = 1;
+                res.send(returnData);
+                return;
+            }
+            returnData.msg = '恭喜你，评论成功！';
             returnData.statements = 0;
             res.send(returnData);
         });
-    }).catch((err) => {
-        throw err;
     });
+    // new Comment({
+    //     article: articleId,
+    //     userComments: { commentContent: releaseContent, commentUser: releaseUser }
+    // }).save().then(() => {
+    //     Comment.find().then(result => {
+    //         returnData.result = result;
+    //         returnData.msg = '操作成功';
+    //         returnData.statements = 0;
+    //         res.send(returnData);
+    //     });
+    // }).catch((err) => {
+    //     throw err;
+    // });
 });
 
 // 返回已产生文章评论
 router.post('/releaseComment', (req, res) => {
     const { id } = req.body;
-    Comment.find().then(result => {
-        console.log(result);
-        res.send(result);
-    });
+    const newArr = [];
+    // Comment.find().then(result => {
+    //     result.map(item => {
+    //         if (item.article == id) {
+    //             newArr.push(item);
+    //         };
+    //     });
+    //     console.log(newArr);
+    //     res.send(newArr);
+    // });
 });
 
 // 用户点赞
-router.get('/support', (req, res) => {
-    const { newState, id, who: level, secondId: id2 } = req.query;
-    Comment.findOne({ _id: id }).then((result) => {
-        let count;
-        if (level == 'first') {
-            if (newState === 'true') {
-                count = result.userComments.commentSupport + 1;
-            } else {
-                count = result.userComments.commentSupport - 1;
-            }
-            result.userComments.commentSupport = count;
-            result.userComments.isSupport = newState;
-        } else {
-            result.userComments.reply.map((item) => {
-                if (item._id == id2) {
-                    if (newState === 'true') {
-                        count = item.replySupport + 1;
-                    } else {
-                        count = item.replySupport - 1;
-                    }
-                    item.replySupport = count;
-                    item.replyIsSupport = newState;
-                }
-                return item;
-            });
-        }
-        Comment.updateOne({ _id: id }, { userComments: result.userComments }, (err) => {
-            if (err) {
-                returnData.msg = '操作失败';
-                returnData.statements = 1;
-                res.send(returnData);
-                return;
-            }
-            returnData.msg = '操作成功';
-            returnData.statements = 0;
-            res.send(returnData);
-        });
-    });
-});
+// router.get('/support', (req, res) => {
+//     const { newState, id, who: level, secondId: id2 } = req.query;
+//     Comment.findOne({ _id: id }).then((result) => {
+//         let count;
+//         if (level == 'first') {
+//             if (newState === 'true') {
+//                 count = result.userComments.commentSupport + 1;
+//             } else {
+//                 count = result.userComments.commentSupport - 1;
+//             }
+//             result.userComments.commentSupport = count;
+//             result.userComments.isSupport = newState;
+//         } else {
+//             result.userComments.reply.map((item) => {
+//                 if (item._id == id2) {
+//                     if (newState === 'true') {
+//                         count = item.replySupport + 1;
+//                     } else {
+//                         count = item.replySupport - 1;
+//                     }
+//                     item.replySupport = count;
+//                     item.replyIsSupport = newState;
+//                 }
+//                 return item;
+//             });
+//         }
+//         Comment.updateOne({ _id: id }, { userComments: result.userComments }, (err) => {
+//             if (err) {
+//                 returnData.msg = '操作失败';
+//                 returnData.statements = 1;
+//                 res.send(returnData);
+//                 return;
+//             }
+//             returnData.msg = '操作成功';
+//             returnData.statements = 0;
+//             res.send(returnData);
+//         });
+//     });
+// });
 
 // 用户回复框
 // router.get('/replyBox',(req,res)=>{
@@ -183,62 +210,62 @@ router.get('/support', (req, res) => {
 // })
 
 // 用户回复
-router.post('/reply', (req, res) => {
-    const { replyUser, replyContent, id, replyUsered } = req.body;
-    Comment.findOne({ _id: id }).then(result => {
-        if (result.userComments.reply === false) {
-            result.userComments.isReply = true;
-        }
-        result.userComments.reply.push({ replyContent, replyUser, replyUsered });
-        Comment.updateOne({ _id: id }, { userComments: result.userComments }, (err) => {
-            if (err) {
-                returnData.msg = '操作失败';
-                returnData.statements = 1;
-                res.send(returnData);
-                return;
-            }
-            Comment.find().then(result => {
-                returnData.result = result;
-                returnData.msg = '操作成功';
-                returnData.statements = 0;
-                res.send(returnData);
-            });
-        });
-    });
-});
+// router.post('/reply', (req, res) => {
+//     const { replyUser, replyContent, id, replyUsered } = req.body;
+//     Comment.findOne({ _id: id }).then(result => {
+//         if (result.userComments.reply === false) {
+//             result.userComments.isReply = true;
+//         }
+//         result.userComments.reply.push({ replyContent, replyUser, replyUsered });
+//         Comment.updateOne({ _id: id }, { userComments: result.userComments }, (err) => {
+//             if (err) {
+//                 returnData.msg = '操作失败';
+//                 returnData.statements = 1;
+//                 res.send(returnData);
+//                 return;
+//             }
+//             Comment.find().then(result => {
+//                 returnData.result = result;
+//                 returnData.msg = '操作成功';
+//                 returnData.statements = 0;
+//                 res.send(returnData);
+//             });
+//         });
+//     });
+// });
 
 // 用户回复内容
-router.post('/replyContent', (req, res) => {
-    const { id } = req.body;
-    Comment.findOne({ _id: id }).then((result) => {
-        res.send(result);
-    });
-});
+// router.post('/replyContent', (req, res) => {
+//     const { id } = req.body;
+//     Comment.findOne({ _id: id }).then((result) => {
+//         res.send(result);
+//     });
+// });
 
-router.post('/secondReplyContent', (req, res) => {
-    const { firstId, secondId, perUser, nowUser, value } = req.body;
-    Comment.findOne({ _id: firstId }).then((result) => {
-        const newData = {};
-        newData.replyUsered = perUser;
-        newData.replyUser = nowUser;
-        newData.replyContent = value;
-        result.userComments.reply = result.userComments.reply.concat(newData);
-        Comment.updateOne({ _id: firstId }, { userComments: result.userComments }, (err) => {
-            if (err) {
-                returnData.msg = '操作失败';
-                returnData.statements = 1;
-                res.send(returnData);
-                return;
-            }
-            Comment.find().then(result1 => {
-                returnData.result = result1;
-                returnData.msg = '操作成功';
-                returnData.statements = 0;
-                res.send(returnData);
-            });
-        });
-    });
-});
+// router.post('/secondReplyContent', (req, res) => {
+//     const { firstId, secondId, perUser, nowUser, value } = req.body;
+//     Comment.findOne({ _id: firstId }).then((result) => {
+//         const newData = {};
+//         newData.replyUsered = perUser;
+//         newData.replyUser = nowUser;
+//         newData.replyContent = value;
+//         result.userComments.reply = result.userComments.reply.concat(newData);
+//         Comment.updateOne({ _id: firstId }, { userComments: result.userComments }, (err) => {
+//             if (err) {
+//                 returnData.msg = '操作失败';
+//                 returnData.statements = 1;
+//                 res.send(returnData);
+//                 return;
+//             }
+//             Comment.find().then(result1 => {
+//                 returnData.result = result1;
+//                 returnData.msg = '操作成功';
+//                 returnData.statements = 0;
+//                 res.send(returnData);
+//             });
+//         });
+//     });
+// });
 //
 // //回复框初始化
 // router.get('/initBox',(req,res)=>{
