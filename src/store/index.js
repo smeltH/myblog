@@ -13,7 +13,7 @@ export default new Vuex.Store({
         articleList: []// 文章列表
     },
     mutations: {
-    // 同步保存用户名
+        // 同步保存用户名
         saveUserName(state, value) {
             state.username = value;
         },
@@ -22,15 +22,15 @@ export default new Vuex.Store({
             state.category = value;
         },
         /*
-    * 同步保存所有的文章
-    *
-    */
+        * 同步保存所有的文章
+        *
+        */
         saveArticleList(state, value) {
             state.articleList = value;
         }
     },
     actions: {
-    // 获取文章分类
+        // 获取文章分类
         getCategorys(cxt) {
             return new Promise(() => {
                 Axios.post('/api/admin/category').then((result) => {
@@ -39,13 +39,12 @@ export default new Vuex.Store({
             });
         },
         /*
-    * 获取文章内容列表
-    * value：传过来文章第几页和每页多少条消息
-    *       {page:0,count:0}
-    * */
+        * 获取文章内容列表
+        * value：传过来文章第几页和每页多少条消息
+        *       {page:0,count:0}
+        * */
         getArticleLists(cxt, value) {
             getArticleList(value).then((result) => {
-                console.log(result);
                 result.data.data.map(item => item.releaseTime = new Date(item.releaseTime).toLocaleDateString().replace(/\//g, '-'));
                 cxt.commit('saveArticleList', result.data.data);
             });

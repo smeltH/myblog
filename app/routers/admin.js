@@ -7,6 +7,15 @@ const DeleteArticle = require('../schema/deletearticle');
 
 const returnData = {};
 
+// 添加一位默认管理员
+UserInfo.findOne({
+    username: 'huanglian'
+}).then((result) => {
+    if (!result) {
+        new UserInfo({ username: 'huanglian', password: 'hl8075hl', isAdmin: true }).save();
+    }
+});
+
 // 用户注册路由
 router.post('/register', (req, res) => {
     const { username, password } = req.body;
@@ -43,20 +52,23 @@ router.post('/login', (req, res) => {
                 password
             })
                 .then((result2) => {
+                    console.log(result2);
                     if (!result2) {
                         returnData.msg = '密码错误';
                         returnData.statements = 2;// 密码错误
                         return;
                     }
-                    if (result2.isAdmin) {
+                    if (result2.isAdmin === 'true' || result2.isAdmin === true) {
                         returnData.isAdmin = true;
+                    } else {
+                        returnData.isAdmin = false;
                     }
                     returnData.msg = '登录成功';
                     returnData.statements = 0;// 登录成功
                     res.cookie('userinfo', JSON.stringify({
                         username,
                         _id: result2._id,
-                        isAdmin: !!returnData.isAdmin
+                        isAdmin: returnData.isAdmin
                     }), { maxAge: 324000000 });
                 }).then(() => {
                     res.send(returnData);

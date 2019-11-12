@@ -14,10 +14,14 @@ const articleSchemea = mongoose.Schema({
         type: Date,
         default: Date.now
     }, // 发布时间
-    supportNumber: {
-        type: Number,
-        default: 0
-    }, // 点赞数
+    // supportNumber: {
+    //     type: Number,
+    //     default: 0
+    // }, // 点赞数
+    supportMembers: {
+        type: Array,
+        default: []
+    },
     hotNumber: {
         type: Number,
         default: 0
@@ -32,24 +36,25 @@ const articleSchemea = mongoose.Schema({
     }, // 是否推荐
     comments: {
         type: Array,
-        default: {
-            releaseUser: {
-                type: Schema.Types.ObjectId,
-                default: '无名氏'
-            },
-            releaseTime: {
-                type: Date,
-                default: Date.now
-            },
-            releaseContent: {
-                type: String,
-                default: ''
-            },
-            avatarImg: {
-                type: String,
-                default: ''
-            }
-        }
+        // default: {
+        //     releaseUser: {
+        //         type: Schema.Types.ObjectId,
+        //         default: '无名氏'
+        //     },
+        //     releaseTime: {
+        //         type: Date,
+        //         default: Date.now
+        //     },
+        //     releaseContent: {
+        //         type: String,
+        //         default: ''
+        //     },
+        //     avatarImg: {
+        //         type: String,
+        //         default: ''
+        //     }
+        // }
+        default: []
     }
 });
 module.exports = mongoose.model('articlelists', articleSchemea);

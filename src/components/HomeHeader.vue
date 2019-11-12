@@ -28,8 +28,8 @@
 </template>
 
 <script>
-    import UserInfo from 'public/UserInfo'
-    import {getCookie} from '../../../../static/js/getCookie'
+    import UserInfo from '@/public/UserInfo'
+    import {getCookie} from '@/static/js/getCookie'
     export default {
         name: "HomeHeader",
         data() {
@@ -48,14 +48,12 @@
             }
         },
         created(){
-            let userInfo = getCookie('userinfo')
+            let userInfo = getCookie('userinfo');
             if(userInfo){
                 userInfo = JSON.parse(userInfo)
                 this.isLogin = true;
                 this.username = userInfo.username;
-                if(userInfo.isAdmin){
-                    this.isAdmin = userInfo.isAdmin;
-                }
+                this.isAdmin = userInfo.isAdmin;
                 return;
             }
         },

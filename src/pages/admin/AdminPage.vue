@@ -52,7 +52,7 @@
 </template>
 
 <script>
-    import UserInfo from 'public/UserInfo'
+    import UserInfo from '@/public/UserInfo'
     import {getCookie} from '../../static/js/getCookie'
     export default {
         name: "AdminPage",

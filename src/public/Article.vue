@@ -1,33 +1,38 @@
 <template>
     <div class="article">
         <div class="article-left">
-            <img src="" alt="">
+            <img v-if="article.articleImg" :src="article.articleImg" alt="">
+            <img v-else src="../assets/images/no-pic.png" alt="">
         </div>
         <div class="article-right">
             <div class="right-title">
-                <slot name="title">使用ES2018正则Unicode属性类过滤Emoji表情</slot>
+                <h2>{{article.title}}</h2>
             </div>
             <div class="right-content">
-                <slot name="description">便的方法，之前也没有注意</slot>
+                <p>{{article.description}}</p>
             </div>
             <div class="operate-info">
-          <span class="iconlists release-date">
-            <i class="iconfont icon-rili"></i><slot name="time">2019-07-08 20:49:25</slot>
-          </span>
+                <span class="iconlists release-date">
+                    <i class="iconfont icon-rili"></i>
+                    <span>{{article.releaseTime}}</span>
+                </span>
                 <span class="iconlists degree">
-            <i class="iconfont icon-redu"></i><slot name="hot">103</slot>
-          </span>
+                    <i class="iconfont icon-liulanshu"></i>
+                    <span>{{article.hotNumber}}</span>
+                </span>
                 <span class="iconlists comment-number">
-            <i class="iconfont icon-pinglun-copy-copy"></i><slot name="comments">51</slot>
-          </span>
+                    <i class="iconfont icon-wsdzb_zzgzt_zzsh_mzpy_dymzpyjl"></i>
+                    <span v-if="article.comments">{{article.comments.length}}</span>
+                </span>
                 <span class="iconlists support-number">
-            <i class="iconfont icon-dianzan11"></i><slot name="support">22</slot>
-          </span>
-                <slot name="readMore"></slot>
+                    <i class="iconfont icon-dianzan"></i>
+                    <span v-if="article.supportMembers">{{article.supportMembers.length}}</span>
+                </span>
+                <router-link :to="{name:'detaillink',params:{id:article._id}}" class="read-more" tag="button">查看全文</router-link>
             </div>
         </div>
         <div class="article-top">
-            <slot class="iconfont icon-iconfont-zd" name="isTop"></slot>
+            <i class="iconfont icon-zhiding" v-if="article.isTop"></i>
         </div>
     </div>
 </template>
@@ -39,7 +44,8 @@
             return {
                 isTop:false
             }
-        }
+        },
+        props: ['article']
     }
 </script>
 
@@ -61,7 +67,7 @@
                 width: 100%;
                 height: 100%;
                 background-color: #ccc;
-                border-radius: 8px;
+                border-radius: 10px;
             }
         }
         .article-right{
@@ -123,9 +129,10 @@
         .article-top{
             position: absolute;
             right: 0;
-            top: 20px;
+            top: -6px;
             color: #ffc800;
-            .icon-iconfont-zd{
+            .icon-zhiding{
+                font-size: 40px;
             }
         }
     }

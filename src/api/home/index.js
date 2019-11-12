@@ -32,14 +32,20 @@ const getComment = (id) => {
 };
 
 // 回复框初始化
-const initBox = () => {
-    return Axios.get('/api/index/initBox');
+const toSupport = (articleId, userId) => {
+    return Axios.post('/api/index/toSupport', { articleId, userId });
+};
+
+// 回复框初始化
+const toCancelSupport = (articleId, userId) => {
+    return Axios.post('/api/index/toCancelSupport', { articleId, userId });
 };
 export {
     getArticleList,
     getCategory,
     getFirstCategoryArcticle,
     commitComment,
-    initBox,
+    toSupport,
+    toCancelSupport,
     getComment
 };

@@ -2,28 +2,31 @@
     <div class="article-detail">
         <home-header></home-header>
         <div class="article-content">
-            <div class="article-operate">
-                <el-badge :value="comment" :max="99" class="item" type="primary">
-                    <i class="el-icon-chat-dot-round"></i>
-                </el-badge>
-                <el-badge :value="support" :max="99" class="item" type="primary">
-                    <i class="el-icon-star-off"></i>
-                </el-badge>
-            </div>
-            <div class="article">
+            <div class="article" ref="refArticleContent">
+                <div class="article-operate">
+                    <el-badge :value="support" :max="99" class="item" type="primary">
+                        <i v-if="isSupport" class="iconfont icon-dianzan supported" @click="toCancelSupport"></i>
+                        <i v-else class="iconfont icon-dianzan" @click="toSupport"></i>
+                    </el-badge>
+                    <el-badge :value="comment" :max="99" class="item" type="primary">
+                        <i class="iconfont icon-wsdzb_zzgzt_zzsh_mzpy_dymzpyjl"
+                           @click="toCommentList"
+                           ref="comment-icon">
+                        </i>
+                    </el-badge>
+                </div>
                 <h2>{{detail.title}}</h2>
                 <div class="article-info">
                     发布时间：<span class="time">{{detail.releaseTime}}</span>
                     作者：<span class="author">{{detail.author}}</span>
                     阅读数：<span class="hot">{{detail.hotNumber}}</span>
-                    <!--评论数：<span class="comment">{{detail.comments.length}}</span>-->
-                    点赞数：<span class="support">{{detail.supportNumber}}</span>
+                    评论数：<span class="comment" v-if="detail.comments">{{comment}}</span>
+                    点赞数：<span class="support">{{support}}</span>
                 </div>
-                <!--<markdown-it-vue :content="detail.contentHtml" :options="options"/>-->
                 <article v-html="detail.contentHtml"></article>
-                <div class="article-comments">
+                <div class="article-comments" ref="refUserComment">
                     <div class="comment-box">
-                        <user-comment v-if="detail.comments" :commentLists="detail.comments" :articleId="detail._id"></user-comment>
+                        <user-comment v-if="detail.comments" :commentLists="detail.comments" :articleId="detail._id" @commentsChanged="changeComments"></user-comment>
                     </div>
                 </div>
             </div>
@@ -34,11 +37,12 @@
 
 <script>
     import MarkdownItVue from 'markdown-it-vue'
-    import {getTime} from "../../../static/js/getTime";
-    import HomeHeader from 'header/HomeHeader'
-    import ContentRight from 'content/basic/ContentRight'
-    import UserComment from 'article/detail/base/UserComment'
-    import {getCookie} from "../../../static/js/getCookie";
+    import HomeHeader from '@/components/HomeHeader'
+    import ContentRight from '@/components/ContentRight'
+    import UserComment from '@/components/UserComment'
+    import {getCookie} from '@/static/js/getCookie';
+    import {toSupport, toCancelSupport} from '@/api/home/index'
+    import {getTime} from '../../../static/js/getTime';
     export default {
         name: "ArticleDetail",
         data() {
@@ -73,29 +77,73 @@
                     isLogin:false,
                 },
                 support: 0,
-                comment: 0
+                comment: 0,
+                isSupport: false
             }
         },
         components:{
             HomeHeader,
             ContentRight,
-            UserComment,
-            MarkdownItVue
+            MarkdownItVue,
+            UserComment
         },
         methods: {
+            changeComments(value){
+                value = value.map(item => {
+                    item.releaseTime = new Date(item.releaseTime).toLocaleDateString().replace(/\//g, '-');
+                    return item;
+                }).reverse();
+                this.detail.comments = value;
+                this.comment = this.detail.comments.length;
+            },
+            // 给文章点赞
+            toSupport(){
+                this.support++;
+                const userId = JSON.parse(getCookie('userinfo'))._id;
+                console.log(userId);
+                this.isSupport = true;
+                toSupport(this.detail._id, userId)
+            },
+            // 取消点赞
+            toCancelSupport(){
+                this.support--;
+                this.isSupport = false;
+                const userId = JSON.parse(getCookie('userinfo'))._id;
+                toCancelSupport(this.detail._id, userId)
+            },
+            // 左侧文章点赞、评论信息栏点击，跳转到评论部分
+            toCommentList(){
+                const articleBox = this.$refs['refArticleContent'];
+                document.documentElement.scrollTop = articleBox.clientHeight - articleBox.children[articleBox.children.length-1].clientHeight;
+            }
         },
         watch: {
+            async '$route.query'(){
+                const _id = this.$route.params.id;
+                const {data} = await this.$axios.post('/api/index/articleDetail',{_id});
+                data.releaseTime = new Date(data.releaseTime).toLocaleDateString().replace(/\//g, '-');
+                data.comments = data.comments.map(item => {
+                    item.releaseTime = new Date(item.releaseTime).toLocaleDateString().replace(/\//g, '-');
+                    return item;
+                }).reverse();
+                this.comment = data.comments.length;
+                this.support = data.supportMembers == [] ? 0 : data.supportMembers.length;
+                this.detail = data;
+            }
         },
-        async created(){
+        async created() {
             const _id = this.$route.params.id;
-            const {data} = await this.$axios.post('/api/index/articleDetail',{_id})
+            const {data} = await this.$axios.post('/api/index/articleDetail',{_id});
             data.releaseTime = new Date(data.releaseTime).toLocaleDateString().replace(/\//g, '-');
             data.comments = data.comments.map(item => {
                 item.releaseTime = new Date(item.releaseTime).toLocaleDateString().replace(/\//g, '-');
                 return item;
             }).reverse();
             this.comment = data.comments.length;
-            this.support = data.supportNumber;
+            this.support = data.supportMembers.length;
+            if (data.supportMembers.includes(JSON.parse(getCookie('userinfo'))._id)) {
+                this.isSupport = true;
+            }
             this.detail = data;
         }
     }
@@ -122,6 +170,33 @@
             padding: 20px;
             background-color: #fff;
             user-select: text;
+            .article-operate{
+                position: fixed;
+                margin-left: -96px;
+                top: 220px;
+                width: 36px;
+                height: 200px;
+                .item{
+                    width: 36px;
+                    height: 36px;
+                    line-height: 36px;
+                    margin-bottom: 12px;
+                    background-color: #fff;
+                    border-radius: 50%;
+                    text-align: center;
+                    user-select: none;
+                }
+                .iconfont{
+                    width: 36px;
+                    height: 36px;
+                    font-size: 20px;
+                    color: #b2bac2;
+                    cursor: pointer;
+                }
+                .supported{
+                    color: #157fea;
+                }
+            }
             h2{
                 padding: 20px 0;
                 text-align: center;
@@ -134,17 +209,6 @@
             .content{
                 font-size: 16px;
                 word-wrap:break-word
-            }
-        }
-        .article-operate{
-            position: absolute;
-            left: -80px;
-            top: 220px;
-            width: 50px;
-            height: 200px;
-            background-color: #bbb;
-            i{
-                cursor: pointer;
             }
         }
     }

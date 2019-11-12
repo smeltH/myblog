@@ -1,21 +1,21 @@
 <template>
   <div class="home-content">
-    <content-left></content-left>
-    <content-right></content-right>
+    <!--<content-left></content-left>-->
+    <!--<content-right></content-right>-->
   </div>
 </template>
 
 <script>
-  import ContentLeft from 'content/basic/ContentLeft'
-  import ContentRight from 'content/basic/ContentRight'
+  // import ContentLeft from 'content/basic/ContentLeft'
+  // import ContentRight from 'content/basic/ContentRight'
   export default {
       name: "HomeContent",
       data() {
           return {}
       },
       components:{
-        ContentLeft,
-        ContentRight
+        // ContentLeft,
+        // ContentRight
       }
     }
 </script>

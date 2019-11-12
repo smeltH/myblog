@@ -1,18 +1,19 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HomePage from '@/components/home/HomePage';
-import AdminPage from '@/components/admin/AdminPage';
-import Login from 'header/Login';
-import Register from 'header/Register';
-import UserLists from 'admin/basic/UserLists';
-import ArticleLists from 'admin/basic/ArticleLists';
-import CategoryAdd from 'admin/basic/CategoryAdd';
-import CategoryLists from 'admin/basic/CategoryLists';
-import CreateArticle from 'admin/basic/CreateArticle';
-import EditArticle from 'admin/basic/EditArticle';
-import ArticleDetail from 'article/detail/ArticleDetail';
-import Article from 'article/ArticleType';
-import NotFound from 'public/NotFound';
+import AdminPage from '@/pages/admin/AdminPage';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import UserLists from '@/pages/admin/basic/UserLists';
+import ArticleLists from '@/pages/admin/basic/ArticleLists';
+import CategoryAdd from '@/pages/admin/basic/CategoryAdd';
+import CategoryLists from '@/pages/admin/basic/CategoryLists';
+import CreateArticle from '@/pages/admin/basic/CreateArticle';
+import EditArticle from '@/pages/admin/basic/EditArticle';
+import ArticleDetail from '@/pages/article/detail/ArticleDetail';
+import Article from '@/public/Article';
+import NotFound from '@/public/NotFound';
+
+import Index from '@/pages/home/index';
 
 Vue.use(Router);
 
@@ -26,7 +27,7 @@ export default new Router({
         {
             path: '/index',
             name: 'HomePage',
-            component: HomePage
+            component: Index
         },
         {
             path: '/login',

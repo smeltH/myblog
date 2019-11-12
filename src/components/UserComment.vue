@@ -41,9 +41,9 @@
 </template>
 
 <script>
-    import {getCookie} from "../../../../static/js/getCookie";
-    import {commitComment, getComment} from "../../../../api/home/index";
-    import {getTime} from "../../../../static/js/getTime";
+    import {getCookie} from "../static/js/getCookie";
+    import {commitComment, getComment} from "../api/home/index";
+    import {getTime} from "../static/js/getTime";
 
     export default {
         name: "UserComment",
@@ -56,7 +56,7 @@
                 commentList:[],
                 isSupp:false,
                 time:new Date(),
-                commentCount: 5,
+                commentCount: 10,
                 currentPage: 1,
                 currentComment: []
             }
@@ -72,12 +72,13 @@
                 }
                 const userName = JSON.parse(getCookie('userinfo')).username;
                 if(this.$refs.releaseValue.value){
-                    const {data} = await commitComment({releaseContent:this.$refs.releaseValue.value,articleId:this.articleId,releaseUser:userName});
+                    const {data} = await commitComment({ releaseContent:this.$refs.releaseValue.value, articleId:this.articleId, releaseUser:userName });
                     if( data.statements === 0 ){
                         this.$message({
                             type: 'success',
                             message: data.msg
                         });
+                        this.$emit('commentsChanged', data.result);
                     }else{
                         this.$message({
                             type: 'info',
@@ -109,16 +110,19 @@
             }
         },
         computed:{
+            // 评论列表切换
             getCommentList:{
                 get(){
-                    return this.currentComment = this.commentLists.slice((this.currentPage-1) * this.commentCount, this.currentPage * this.commentCount)
+                    this.currentComment = this.commentLists.slice((this.currentPage-1) * this.commentCount, this.currentPage * this.commentCount)
+                    return this.currentComment;
                 }
             }
+        },
+        watch: {
+            commentLists(){
+                console.log(1);
+            }
         }
-        //回复框初始化
-        // beforeCreate(){
-        //   initBox();
-        // },
     }
 </script>
 
