@@ -10,6 +10,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 
 const env = require('../config/prod.env');
 
@@ -74,6 +76,19 @@ const webpackConfig = merge(baseWebpackConfig, {
             // necessary to consistently work with multiple chunks via CommonsChunkPlugin
             chunksSortMode: 'dependency'
         }),
+        new PreloadWebpackPlugin({
+            rel: 'prefetch'
+        }),
+        new PreloadWebpackPlugin({
+            rel: 'preload',
+            as(entry) {
+                if (/\.css$/.test(entry)) {
+                    return 'style';
+                }
+                return 'script';
+            },
+            include: ['app', 'vendor', 'manifest']
+        }),
         // keep module.id stable when vendor modules does not change
         new webpack.HashedModuleIdsPlugin(),
         // enable scope hoisting
@@ -108,6 +123,10 @@ const webpackConfig = merge(baseWebpackConfig, {
             minChunks: 3
         }),
 
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname, '..'),
+            manifest: require('../vendor-manifest')
+        }),
         // copy custom static assets
         new CopyWebpackPlugin([
             {
@@ -115,7 +134,13 @@ const webpackConfig = merge(baseWebpackConfig, {
                 to: config.build.assetsSubDirectory,
                 ignore: ['.*']
             }
-        ])
+        ]),
+        // 将vendor.dll.js插入HTML
+        new HtmlWebpackIncludeAssetsPlugin({
+            assets: [utils.assetsPath('js/vendor.dll.js')],
+            files: ['index.html'],
+            append: false
+        })
     ]
 });
 

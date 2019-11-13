@@ -31,7 +31,9 @@
                     </div>
                 </div>
             </div>
-            <content-right></content-right>
+            <keep-alive>
+                <content-right></content-right>
+            </keep-alive>
         </div>
     </div>
 </template>
@@ -39,11 +41,11 @@
 <script>
     import HomeHeader from '@/components/HomeHeader'
     import ContentRight from '@/components/ContentRight'
-    import Article from '@/public/Article'
+    import Article from '@/components/Article'
     import {getCookie} from "@/static/js/getCookie";
-    import Articles from '@/public/Article'
-    import TopAndButtom from '@/public/TopAndButtom'
-    import FiveArticles from '@/public/FiveArticles'
+    import Articles from '@/components/Article'
+    import TopAndButtom from '@/components/TopAndButtom'
+    import FiveArticles from '@/components/FiveArticles'
     import {getTime} from "@/static/js/getTime";
     import {getCategory,getFirstCategoryArcticle} from "@/api/home";
     export default {

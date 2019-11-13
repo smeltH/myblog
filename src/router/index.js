@@ -9,9 +9,9 @@ import CategoryAdd from '@/pages/admin/basic/CategoryAdd';
 import CategoryLists from '@/pages/admin/basic/CategoryLists';
 import CreateArticle from '@/pages/admin/basic/CreateArticle';
 import EditArticle from '@/pages/admin/basic/EditArticle';
-import ArticleDetail from '@/pages/article/detail/ArticleDetail';
-import Article from '@/public/Article';
-import NotFound from '@/public/NotFound';
+import ArticleDetail from '@/pages/article/ArticleDetail';
+import Article from '@/components/Article';
+import NotFound from '@/components/NotFound';
 
 import Index from '@/pages/home/index';
 
