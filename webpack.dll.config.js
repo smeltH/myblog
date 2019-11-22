@@ -4,7 +4,7 @@ const webpack = require('webpack');
 module.exports = {
     // 想要打包的模块
     entry: {
-        vendor: ['vue', 'vuex', 'axios', 'vue-router', 'element-ui', 'vue-meditor']
+        vendor: ['vue-meditor']
     },
     output: {
         path: path.join(__dirname, './static/js'), // 打包后文件输出的位置

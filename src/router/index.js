@@ -1,23 +1,24 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import AdminPage from '@/pages/admin/AdminPage';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import UserLists from '@/pages/admin/basic/UserLists';
-import ArticleLists from '@/pages/admin/basic/ArticleLists';
-import CategoryAdd from '@/pages/admin/basic/CategoryAdd';
-import CategoryLists from '@/pages/admin/basic/CategoryLists';
-import CreateArticle from '@/pages/admin/basic/CreateArticle';
-import EditArticle from '@/pages/admin/basic/EditArticle';
-import ArticleDetail from '@/pages/article/ArticleDetail';
-import Article from '@/components/Article';
-import NotFound from '@/components/NotFound';
+// import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-import Index from '@/pages/home/index';
+const Index = () => import('@/pages/home/Index');
+const AdminPage = () => import('@/pages/admin/AdminPage');
+const Login = () => import('@/pages/Login');
+const Register = () => import('@/pages/Register');
+const UserLists = () => import('@/pages/admin/basic/UserLists');
+const ArticleLists = () => import('@/pages/admin/basic/ArticleLists');
+const CategoryAdd = () => import('@/pages/admin/basic/CategoryAdd');
+const CategoryLists = () => import('@/pages/admin/basic/CategoryLists');
+const CreateArticle = () => import('@/pages/admin/basic/CreateArticle');
+const EditArticle = () => import('@/pages/admin/basic/EditArticle');
+const ArticleDetail = () => import('@/pages/article/ArticleDetail');
+const Article = () => import('@/components/Article');
+const NotFound = () => import('@/components/NotFound');
 
-Vue.use(Router);
+// Vue.use(VueRouter);
 
-export default new Router({
+export default new VueRouter({
+    mode: 'history',
     routes: [
         {
             path: '/',

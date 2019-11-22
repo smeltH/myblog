@@ -15,6 +15,7 @@
 </template>
 
 <script>
+    import {login} from '@/api/home/index';
     export default {
         name: "Login",
         data() {
@@ -36,7 +37,26 @@
             }
         },
         methods:{
-            login(){
+            async login(){
+                const {data} = await login(this.userinfo);
+
+                //登录成功
+                if(data.statements === 0){
+                    this.$message({
+                        message: data.msg,
+                        type: 'success'
+                    })
+                    setTimeout(()=>{
+                        this.$store.commit('saveUserName',this.userinfo.username)
+                        this.$router.push('/')
+                    },200)
+                    return
+                }
+                if(data.statements === 1){
+                    this.$message.error(data.msg)
+                    return
+                }
+                this.$message.error(data.msg)
                 this.$axios.post('/api/admin/login',this.userinfo).then((res)=>{
                     //登录成功
                     if(res.data.statements === 0){

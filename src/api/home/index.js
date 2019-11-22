@@ -1,4 +1,8 @@
 import Axios from 'axios';
+
+const login = (userinfo) => {
+    return Axios.post('/api/admin/login', userinfo);
+};
 /*
 * 获取文章列表
 * value：{
@@ -40,12 +44,18 @@ const toSupport = (articleId, userId) => {
 const toCancelSupport = (articleId, userId) => {
     return Axios.post('/api/index/toCancelSupport', { articleId, userId });
 };
+// 获取首页的文章
+const getCategoryArticles = (articletype, count) => {
+    return Axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`, { count });
+};
 export {
+    login,
     getArticleList,
     getCategory,
     getFirstCategoryArcticle,
     commitComment,
     toSupport,
     toCancelSupport,
-    getComment
+    getComment,
+    getCategoryArticles
 };

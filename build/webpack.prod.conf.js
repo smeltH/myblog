@@ -12,6 +12,9 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
+const os = require('os');
+const HappyPack = require('happypack');
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 
 const env = require('../config/prod.env');
 
@@ -30,18 +33,24 @@ const webpackConfig = merge(baseWebpackConfig, {
         chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
     },
     plugins: [
-    // http://vuejs.github.io/vue-loader/en/workflow/production.html
+        // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
             'process.env': env
         }),
         new UglifyJsPlugin({
             uglifyOptions: {
                 compress: {
-                    warnings: false
+                    warnings: false,
+                    reduce_vars: true
+                },
+                output: {
+                    comments: false,
+                    beautify: false
                 }
             },
             sourceMap: config.build.productionSourceMap,
-            parallel: true
+            parallel: true,
+            cache: true
         }),
         // extract css into its own file
         new ExtractTextPlugin({
@@ -140,6 +149,13 @@ const webpackConfig = merge(baseWebpackConfig, {
             assets: [utils.assetsPath('js/vendor.dll.js')],
             files: ['index.html'],
             append: false
+        }),
+        new HappyPack({
+            id: 'happyBabel',
+            loaders: [{
+                loader: 'babel-loader?cacheDirectory=true'
+            }],
+            threadPool: happyThreadPool
         })
     ]
 });
@@ -149,7 +165,7 @@ if (config.build.productionGzip) {
 
     webpackConfig.plugins.push(
         new CompressionWebpackPlugin({
-            asset: '[path].gz[query]',
+            filename: '[path].gz[query]',
             algorithm: 'gzip',
             test: new RegExp(
                 '\\.(' +

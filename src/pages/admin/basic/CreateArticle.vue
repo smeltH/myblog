@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div class="create-article">
         <div class="crumbs-nav">
             <el-breadcrumb separator="/">

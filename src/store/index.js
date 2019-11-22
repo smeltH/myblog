@@ -1,8 +1,8 @@
-import Vue from 'vue';
+// import Vue from 'vue';
 import Axios from 'axios';
 import Vuex from 'vuex';
 import { getArticleList } from '../api/home/index';
-Vue.use(Vuex);
+// Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
@@ -43,11 +43,19 @@ export default new Vuex.Store({
         * value：传过来文章第几页和每页多少条消息
         *       {page:0,count:0}
         * */
-        getArticleLists(cxt, value) {
-            getArticleList(value).then((result) => {
-                result.data.data.map(item => item.releaseTime = new Date(item.releaseTime).toLocaleDateString().replace(/\//g, '-'));
-                cxt.commit('saveArticleList', result.data.data);
-            });
+        async getArticleLists(cxt, value) {
+            const { data: { data } } = await getArticleList(value);
+            /* eslint no-return-assign:0 */
+            if (data) {
+                data.map(item => item.releaseTime = new Date(item.releaseTime).toLocaleDateString().replace(/\//g, '-'));
+                cxt.commit('saveArticleList', data);
+            } else {
+                cxt.commit('saveArticleList', []);
+            }
+            // getArticleList(value).then((result) => {
+            //     result.data.data.map(item => item.releaseTime = new Date(item.releaseTime).toLocaleDateString().replace(/\//g, '-'));
+            //     cxt.commit('saveArticleList', result.data.data);
+            // });
         }
     }
 });

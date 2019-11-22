@@ -13,6 +13,13 @@ module.exports = {
     entry: {
         app: './src/main.js'
     },
+    externals: {
+        'vue': 'Vue',
+        'vuex': 'Vuex',
+        'vue-router': 'VueRouter',
+        'element-ui': 'ELEMENT',
+        'axios': 'axios'
+    },
     output: {
         path: config.build.assetsRoot,
         filename: '[name].js',
@@ -32,18 +39,18 @@ module.exports = {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader',
+                loader: 'vue-loader?cacheDirectory=true',
                 options: vueLoaderConfig
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader',
+                loader: 'babel-loader?cacheDirectory=true',
                 include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')],
                 exclude: /(node_modules|bower_components)/
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-                loader: 'url-loader',
+                loader: 'url-loader?cacheDirectory=true',
                 options: {
                     limit: 10000,
                     name: utils.assetsPath('img/[name].[hash:7].[ext]')
@@ -51,7 +58,7 @@ module.exports = {
             },
             {
                 test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-                loader: 'url-loader',
+                loader: 'url-loader?cacheDirectory=true',
                 options: {
                     limit: 10000,
                     name: utils.assetsPath('media/[name].[hash:7].[ext]')
@@ -59,7 +66,7 @@ module.exports = {
             },
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                loader: 'url-loader',
+                loader: 'url-loader?cacheDirectory=true',
                 options: {
                     limit: 10000,
                     name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
@@ -67,7 +74,7 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                loader: 'style-loader!css-loader!less-loader'
+                loader: 'style-loader!css-loader!less-loader?cacheDirectory=true&id=happybabel'
             }
         ]
     },

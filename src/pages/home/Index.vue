@@ -15,9 +15,14 @@
                     <div class="other-title">
                         <h2>最新文章</h2>
                     </div>
-                    <div class="article-lists" v-for="article in getArticleList">
-                        <articles :article="article">
-                        </articles>
+                    <div  v-if="getArticleList.length">
+                        <div class="article-lists" v-for="article in getArticleList">
+                            <articles :article="article">
+                            </articles>
+                        </div>
+                    </div>
+                    <div v-else class="no-article">
+                        <h4>暂无文章</h4>
                     </div>
                     <!--文章分页跳转部分-->
                     <div class="block">
@@ -47,7 +52,7 @@
     import TopAndButtom from '@/components/TopAndButtom'
     import FiveArticles from '@/components/FiveArticles'
     import {getTime} from "@/static/js/getTime";
-    import {getCategory,getFirstCategoryArcticle} from "@/api/home";
+    import {getCategory,getFirstCategoryArcticle,getCategoryArticles} from "@/api/home";
     export default {
         name: "HomePage",
         data() {
@@ -85,11 +90,11 @@
             }
         },
         async created(){
-            const articletype = this.$route.query.articletype
+            const articletype = this.$route.query.articletype;
             if( articletype ){
-                const {data:{data}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${articletype}`,{count:this.count1})
-                    this.maxPages = data.maxPages;
-                    this.totalCounts = data.totalCounts;
+                const {data:{data}} = await getCategoryArticles(articletype, this.count1);
+                this.maxPages = data.maxPages;
+                this.totalCounts = data.totalCounts;
             }else {
                 this.$store.dispatch('getArticleLists',{page:0,count:this.count2})
             }
@@ -122,9 +127,6 @@
             * */
             async handleCurrentChange(val) {
                 this.$store.dispatch('getArticleLists',{count:this.count2,page:val-1});
-                // const query = this.$route.query.articletype
-                // const {data:{data,maxPages,totalCounts}} = await this.$axios.post(`/api/index/getCategoryArticles?articletype=${query}`,{count:this.count2,page:val-1})
-                // this.getArticlelist = data
             },
             /*
             * 上面的分类栏里面的点击事件
@@ -161,7 +163,6 @@
         },
         filters:{
             getFilterCategory(){
-                console.log(this.$store.state.articleList);
                 return this.$store.state.articleList
             }
         }
@@ -174,7 +175,6 @@
         display: flex;
         margin: 0 auto;
         justify-content: space-between;
-        background-color: rgb(233,234,237);
         padding-top: 110px;
         overflow: hidden;
         .page-left{
@@ -222,6 +222,10 @@
                             height: 100%;
                             background-color: #5784c7;
                         }
+                    }
+                    .no-article{
+                        text-align: center;
+                        font-size: 18px;
                     }
                 }
             }
