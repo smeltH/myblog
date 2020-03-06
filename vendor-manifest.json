@@ -1,1 +1,0 @@
-{"name":"vendor_library","content":{"./node_modules/vue-meditor/dist/index.js":{"id":1,"meta":{"harmonyModule":true},"exports":["default","MarkdownPro","MarkdownPreview"]},"./node_modules/vue-meditor/dist/simple.js":{"id":2,"meta":{}},"./node_modules/vue-meditor/dist/pro.js":{"id":3,"meta":{}},"./node_modules/vue-meditor/dist/preview.js":{"id":4,"meta":{}}}}

@@ -3,20 +3,20 @@
         <home-header></home-header>
         <div class="page-content">
             <div class="page-left">
-                <div class="top-content">
-                    <el-carousel indicator-position="outside" trigger="click" >
-                        <el-carousel-item v-for="item in 4" :key="item">
-                            <h3>{{ item }}</h3>
-                        </el-carousel-item>
-                    </el-carousel>
-                </div>
-                <div class="gray-content"></div>
+                <!--<div class="top-content">-->
+                    <!--<el-carousel indicator-position="outside" trigger="click" >-->
+                        <!--<el-carousel-item v-for="item in 4" :key="item">-->
+                            <!--<h3>{{ item }}</h3>-->
+                        <!--</el-carousel-item>-->
+                    <!--</el-carousel>-->
+                <!--</div>-->
+                <!--<div class="gray-content"></div>-->
                 <div class="bottom-content">
                     <div class="other-title">
                         <h2>最新文章</h2>
                     </div>
                     <div  v-if="getArticleList.length">
-                        <div class="article-lists" v-for="article in getArticleList">
+                        <div class="article-lists" v-for="(article, index) in getArticleList" :key="index">
                             <articles :article="article">
                             </articles>
                         </div>
@@ -47,7 +47,6 @@
     import HomeHeader from '@/components/HomeHeader'
     import ContentRight from '@/components/ContentRight'
     import Article from '@/components/Article'
-    import {getCookie} from "@/static/js/getCookie";
     import Articles from '@/components/Article'
     import TopAndButtom from '@/components/TopAndButtom'
     import FiveArticles from '@/components/FiveArticles'
@@ -111,9 +110,9 @@
             this.maxPages = maxPages;
             this.totalCounts = totalCounts;
 
-            let userInfo = getCookie('userinfo');
+            let userInfo = localStorage.getItem('userinfo');
             if(userInfo){
-                userInfo = JSON.parse(userInfo)
+                // userInfo = JSON.parse(userInfo)
                 this.isLogin = true;
                 this.username = userInfo.username;
                 this.isAdmin = userInfo.isAdmin;
@@ -242,8 +241,6 @@
                     width: 80px;
                     height: 38px;
                     border-bottom: 2px solid rgb(0,0,0);
-                    .h4{
-                    }
                 }
                 .new-article-lists{
                     width: 100%;

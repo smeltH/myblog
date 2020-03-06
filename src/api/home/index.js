@@ -1,5 +1,16 @@
 import Axios from 'axios';
 
+/*
+* 用户id
+* */
+const userId = (username) => {
+    return Axios.post('/api/admin/userId', username);
+}
+
+
+/*
+* 用户登录
+* */
 const login = (userinfo) => {
     return Axios.post('/api/admin/login', userinfo);
 };

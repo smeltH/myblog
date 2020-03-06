@@ -85,9 +85,9 @@ const webpackConfig = merge(baseWebpackConfig, {
             // necessary to consistently work with multiple chunks via CommonsChunkPlugin
             chunksSortMode: 'dependency'
         }),
-        new PreloadWebpackPlugin({
-            rel: 'prefetch'
-        }),
+        // new PreloadWebpackPlugin({
+        //     rel: 'prefetch'
+        // }),
         new PreloadWebpackPlugin({
             rel: 'preload',
             as(entry) {
@@ -96,7 +96,7 @@ const webpackConfig = merge(baseWebpackConfig, {
                 }
                 return 'script';
             },
-            include: ['app', 'vendor', 'manifest']
+            include: ['app']
         }),
         // keep module.id stable when vendor modules does not change
         new webpack.HashedModuleIdsPlugin(),
@@ -132,10 +132,10 @@ const webpackConfig = merge(baseWebpackConfig, {
             minChunks: 3
         }),
 
-        new webpack.DllReferencePlugin({
-            context: path.join(__dirname, '..'),
-            manifest: require('../vendor-manifest')
-        }),
+        // new webpack.DllReferencePlugin({
+        //     context: path.join(__dirname, '..'),
+        //     manifest: require('../vendor-manifest')
+        // }),
         // copy custom static assets
         new CopyWebpackPlugin([
             {
@@ -145,11 +145,11 @@ const webpackConfig = merge(baseWebpackConfig, {
             }
         ]),
         // 将vendor.dll.js插入HTML
-        new HtmlWebpackIncludeAssetsPlugin({
-            assets: [utils.assetsPath('js/vendor.dll.js')],
-            files: ['index.html'],
-            append: false
-        }),
+        // new HtmlWebpackIncludeAssetsPlugin({
+        //     assets: [utils.assetsPath('js/vendor.dll.js')],
+        //     files: ['index.html'],
+        //     append: false
+        // }),
         new HappyPack({
             id: 'happyBabel',
             loaders: [{

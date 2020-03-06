@@ -41,9 +41,7 @@
 </template>
 
 <script>
-    import {getCookie} from "../static/js/getCookie";
-    import {commitComment, getComment} from "../api/home/index";
-    import {getTime} from "../static/js/getTime";
+    import {commitComment} from "../api/home/index";
 
     export default {
         name: "UserComment",
@@ -66,11 +64,11 @@
             * 用户评论发布
             * */
             async releaseComment(){
-                if (!getCookie('userinfo')) {
+                if (!localStorage.getItem('username')) {
                     this.$router.push({path:'/login', name:'loginlink'})
                    return
                 }
-                const userName = JSON.parse(getCookie('userinfo')).username;
+                const userName = localStorage.getItem('username');
                 if(this.$refs.releaseValue.value){
                     const {data} = await commitComment({ releaseContent:this.$refs.releaseValue.value, articleId:this.articleId, releaseUser:userName });
                     if( data.statements === 0 ){
@@ -103,7 +101,7 @@
             }
         },
         async created(){
-            if( getCookie('userinfo') ){
+            if( localStorage.getItem('username') ){
                 this.bgText = '开始评论'
             }else {
                 this.bgText = '请先登录再评论'

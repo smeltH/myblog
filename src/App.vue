@@ -5,12 +5,10 @@
 </template>
 
 <script>
-    import {getCookie} from "./static/js/getCookie";
-
     export default {
         name: 'App',
         created(){
-            let userInfo = getCookie('userinfo')
+            let userInfo = localStorage.getItem('username')
             if(userInfo){
                 userInfo = JSON.parse(userInfo)
                 this.$store.commit('saveUserName',userInfo.username)

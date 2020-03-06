@@ -39,9 +39,13 @@
         methods:{
             async login(){
                 const {data} = await login(this.userinfo);
+                console.log(data);
 
                 //登录成功
                 if(data.statements === 0){
+                    this.$store.commit('saveUserName', this.userinfo.username)
+                    localStorage.setItem('username', this.userinfo.username)
+                    localStorage.setItem('userId', this.userinfo._id)
                     this.$message({
                         message: data.msg,
                         type: 'success'
@@ -57,25 +61,6 @@
                     return
                 }
                 this.$message.error(data.msg)
-                this.$axios.post('/api/admin/login',this.userinfo).then((res)=>{
-                    //登录成功
-                    if(res.data.statements === 0){
-                        this.$message({
-                            message: res.data.msg,
-                            type: 'success'
-                        })
-                        setTimeout(()=>{
-                            this.$store.commit('saveUserName',this.userinfo.username)
-                            this.$router.push('/')
-                        },200)
-                        return
-                    }
-                    if(res.data.statements === 1){
-                        this.$message.error(res.data.msg)
-                        return
-                    }
-                    this.$message.error(res.data.msg)
-                })
             }
         }
     }

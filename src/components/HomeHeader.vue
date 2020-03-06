@@ -20,7 +20,6 @@
                 </div>
                 <div v-show="isLogin" class="logined">
                     <user-info></user-info>
-                    <router-link :to="{name:'adminlink'}" tag="span" class="admin" v-if="isAdmin">进入后台管理</router-link>
                 </div>
             </el-col>
         </el-row>
@@ -29,7 +28,6 @@
 
 <script>
     import UserInfo from '@/components/UserInfo'
-    import {getCookie} from '@/static/js/getCookie'
     export default {
         name: "HomeHeader",
         data() {
@@ -48,16 +46,12 @@
             }
         },
         created(){
-            let userInfo = getCookie('userinfo');
+            let userInfo = localStorage.getItem('username');
             if(userInfo){
-                userInfo = JSON.parse(userInfo)
                 this.isLogin = true;
-                this.username = userInfo.username;
-                this.isAdmin = userInfo.isAdmin;
+                this.username = userInfo;
                 return;
             }
-        },
-        methods:{
         }
     }
 </script>

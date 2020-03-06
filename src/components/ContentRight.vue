@@ -6,13 +6,13 @@
                     <img class="self-avator" src="../assets/images/avatar.png">
                 </div>
                 <div class="self-info">
-                    <h5 class="self-name">LoginErr</h5>
-                    <p class="self-qq"><span>QQ</span>846261654</p>
-                    <p class="self-email"><span>邮箱</span>lian73278075@126.com</p>
-                    <p class="self-school"><span>学校</span>中南民族大学</p>
-                    <p class="self-github"><span>Github</span>https://github.com/Login-err</p>
+                    <h5 class="self-name">{{hostInfo.name}}</h5>
+                    <p class="self-qq"><span>QQ</span>{{hostInfo.qq}}</p>
+                    <p class="self-email"><span>邮箱</span>{{hostInfo.email}}</p>
+                    <p class="self-school"><span>学校</span>{{hostInfo.school}}</p>
+                    <p class="self-github"><span>Github</span>{{hostInfo.git}}</p>
                 </div>
-                <div class="web-info"></div>
+                <!--<div class="web-info"></div>-->
             </div>
         </div>
         <div class="article-recommand">
@@ -33,6 +33,14 @@
         name: "ContentRight",
         data() {
             return {
+                hostInfo: {
+                    name: 'LoginErr',
+                    email: 'huanglianweb@163.com',
+                    phone: '18073278075',
+                    school: '中南民族大学',
+                    git: 'https://github.com/Login-err',
+                    qq: '846261654'
+                },
                 count:4,
                 articles:[]
             }
@@ -125,11 +133,11 @@
                         }
                     }
                 }
-                .web-info{
-                    width: 100%;
-                    height: 80px;
-                    background-color: #1c2327;
-                }
+                /*.web-info{*/
+                    /*width: 100%;*/
+                    /*height: 80px;*/
+                    /*background-color: #1c2327;*/
+                /*}*/
             }
         }
     }

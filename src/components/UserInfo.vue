@@ -25,7 +25,7 @@
             }
         },
         created(){
-            this.username = this.$store.state.username;
+            this.username = localStorage.getItem('username');
         },
         methods:{
             handleCommand (command) {
@@ -33,7 +33,7 @@
                     return;
                 }
                 this.$store.commit('saveUserName','')
-                document.cookie = 'userinfo=' + '';
+                localStorage.removeItem('username')
                 this.$router.push('/');
                 this.$router.go(0)
             },

@@ -36,7 +36,7 @@
                                     </div>
                                 </div>
                                 <div class="published">
-                                    <div v-for="item,index in getCommentList" :key="index">
+                                    <div v-for="(item, index) in getCommentList" :key="index">
                                         <div class="comment-lists">
                                             <div class="left"><img src="" alt=""></div>
                                             <div class="right">
@@ -78,8 +78,7 @@
     import ContentRight from '@/components/ContentRight'
     // import MarkdownItVue from 'markdown-it-vue'
     import {getTime} from '@/static/js/getTime';
-    import {getCookie} from '@/static/js/getCookie';
-    import {toSupport, toCancelSupport} from '@/api/home/index'
+    import {toSupport, toCancelSupport, commitComment} from '@/api/home/index'
     export default {
         name: "ArticleType",
         data() {
@@ -116,7 +115,7 @@
                 support: 0,
                 comment: 0,
                 isSupport: false,
-
+                articleId: '',
 
                 isReply:false,
                 bgText:'请先登录再评论',
@@ -138,13 +137,14 @@
            * 用户评论发布
            * */
             async releaseComment(){
-                if (!getCookie('userinfo')) {
+                if (!localStorage.getItem('username')) {
                     this.$router.push({path:'/login', name:'loginlink'})
                     return
                 }
-                const userName = JSON.parse(getCookie('userinfo')).username;
+                const userName = localStorage.getItem('username')
                 if(this.$refs.releaseValue.value){
                     const {data} = await commitComment({ releaseContent:this.$refs.releaseValue.value, articleId:this.articleId, releaseUser:userName });
+                    console.log(data);
                     if( data.statements === 0 ){
                         this.$message({
                             type: 'success',
@@ -184,7 +184,7 @@
             // 给文章点赞
             toSupport(){
                 this.support++;
-                const userId = JSON.parse(getCookie('userinfo'))._id;
+                const userId = localStorage.getItem('userId');
                 this.isSupport = true;
                 toSupport(this.detail._id, userId)
             },
@@ -192,7 +192,7 @@
             toCancelSupport(){
                 this.support--;
                 this.isSupport = false;
-                const userId = JSON.parse(getCookie('userinfo'))._id;
+                const userId = localStorage.getItem('userId');
                 toCancelSupport(this.detail._id, userId)
             },
             // 左侧文章点赞、评论信息栏点击，跳转到评论部分
@@ -204,6 +204,7 @@
         watch: {
             async '$route.query'(){
                 const _id = this.$route.params.id;
+                this._id = _id;
                 const {data} = await this.$axios.post('/api/index/articleDetail',{_id});
                 data.releaseTime = new Date(data.releaseTime).toLocaleDateString().replace(/\//g, '-');
                 data.comments = data.comments.map(item => {
@@ -217,6 +218,7 @@
         },
         async created() {
             const _id = this.$route.params.id;
+            this.articleId = _id;
             const {data} = await this.$axios.post('/api/index/articleDetail',{_id});
             data.releaseTime = new Date(data.releaseTime).toLocaleDateString().replace(/\//g, '-');
             data.comments = data.comments.map(item => {
@@ -225,11 +227,12 @@
             }).reverse();
             this.comment = data.comments.length;
             this.support = data.supportMembers.length;
-            if (data.supportMembers.includes(JSON.parse(getCookie('userinfo'))._id)) {
+            if (data.supportMembers.includes(localStorage.getItem('userId'))) {
                 this.isSupport = true;
             }
             this.detail = data;
-            if( getCookie('userinfo') ){
+            console.log(data);
+            if( localStorage.getItem('username') ){
                 this.bgText = '开始评论'
             }else {
                 this.bgText = '请先登录再评论'

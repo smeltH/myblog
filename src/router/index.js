@@ -2,15 +2,8 @@
 import VueRouter from 'vue-router';
 
 const Index = () => import('@/pages/home/Index');
-const AdminPage = () => import('@/pages/admin/AdminPage');
 const Login = () => import('@/pages/Login');
 const Register = () => import('@/pages/Register');
-const UserLists = () => import('@/pages/admin/basic/UserLists');
-const ArticleLists = () => import('@/pages/admin/basic/ArticleLists');
-const CategoryAdd = () => import('@/pages/admin/basic/CategoryAdd');
-const CategoryLists = () => import('@/pages/admin/basic/CategoryLists');
-const CreateArticle = () => import('@/pages/admin/basic/CreateArticle');
-const EditArticle = () => import('@/pages/admin/basic/EditArticle');
 const ArticleDetail = () => import('@/pages/article/ArticleDetail');
 const Article = () => import('@/components/Article');
 const NotFound = () => import('@/components/NotFound');
@@ -50,20 +43,20 @@ export default new VueRouter({
             name: 'detaillink',
             component: ArticleDetail
         },
-        {
-            path: '/admin',
-            name: 'adminlink',
-            component: AdminPage,
-            redirect: '/admin/userLists',
-            children: [
-                { path: 'userLists', name: 'userlink', component: UserLists },
-                { path: 'articleLists/editArticle', name: 'editlink', component: EditArticle },
-                { path: 'articleLists', name: 'articlelink', component: ArticleLists },
-                { path: 'categoryAdd', name: 'categoryAddlink', component: CategoryAdd },
-                { path: 'categoryLists', name: 'categorylink', component: CategoryLists },
-                { path: 'createArticle', name: 'createArticlelink', component: CreateArticle }
-            ]
-        },
+        // {
+        //     path: '/admin',
+        //     name: 'adminlink',
+        //     component: AdminPage,
+        //     redirect: '/admin/userLists',
+        //     children: [
+        //         { path: 'userLists', name: 'userlink', component: UserLists },
+        //         { path: 'articleLists/editArticle', name: 'editlink', component: EditArticle },
+        //         { path: 'articleLists', name: 'articlelink', component: ArticleLists },
+        //         { path: 'categoryAdd', name: 'categoryAddlink', component: CategoryAdd },
+        //         { path: 'categoryLists', name: 'categorylink', component: CategoryLists },
+        //         { path: 'createArticle', name: 'createArticlelink', component: CreateArticle }
+        //     ]
+        // },
         {
             path: '/404',
             name: 'notfoundlink',
